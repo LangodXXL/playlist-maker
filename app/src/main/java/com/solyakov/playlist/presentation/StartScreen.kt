@@ -36,14 +36,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.solyakov.playlist.R
-
-
+import com.solyakov.playlist.SeacrhActivity
+import com.solyakov.playlist.SettingsActivity
 
 
 @Composable
@@ -86,10 +88,15 @@ fun ScreenContent() {
         Column(
             modifier = Modifier.padding(top = 10.dp)
         ) {
+
+            val context = LocalContext.current
             Element(
                 screenIcon = Icons.Default.Search,
                 text = "Поиск",
-                onClick = { }
+                onClick = {
+                    val intent = Intent(context, SeacrhActivity::class.java)
+                    context.startActivity(intent)
+                }
             )
 
             Element(
@@ -107,7 +114,10 @@ fun ScreenContent() {
             Element(
                 screenIcon = Icons.Default.Settings,
                 text = "Настройки",
-                onClick = {  }
+                onClick = {
+                    val intent = Intent(context, SettingsActivity::class.java)
+                    context.startActivity(intent)
+                }
             )
         }
     }
@@ -119,7 +129,7 @@ fun ScreenContent() {
 @Composable
 fun Element(screenIcon: ImageVector, text: String, onClick: () -> Unit) {
     TextButton(
-        onClick = onClick,
+        onClick = onClick ,
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(0.dp),
         shape = RoundedCornerShape(0.dp)
