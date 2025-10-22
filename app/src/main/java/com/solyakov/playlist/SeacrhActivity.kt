@@ -14,7 +14,7 @@ class SeacrhActivity: ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlaylistTheme {
-                SearchScreen()
+                SearchScreen({})
             }
         }
     }

@@ -2,6 +2,9 @@
 
 package com.solyakov.playlist.presentation
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Telephony
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +37,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
@@ -42,7 +47,10 @@ import androidx.compose.ui.unit.sp
 import com.solyakov.playlist.R
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(onClick: () -> Unit) {
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +62,7 @@ fun SettingsScreen() {
             title = {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "Настройки",
+                    text = stringResource(R.string.Settings),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -64,7 +72,9 @@ fun SettingsScreen() {
                     modifier = Modifier
                         .padding(start = 16.dp)
                         .size(32.dp)
-                        .clickable {},
+                        .clickable {
+                            onClick()
+                        },
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     tint = MaterialTheme.colorScheme.onBackground
@@ -74,31 +84,57 @@ fun SettingsScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-    SettingsElement("Темная тема")
+    SettingsElement(stringResource(R.string.dark_mode))
     SettingsElement(
+        onClick = {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.putExtra(Intent.EXTRA_TEXT,"Зацени мое приложение")
+            intent.type = "text/plain"
+            context.startActivity(intent)
+        },
         icon = {
             Icon(
-//                modifier = it,
                 imageVector = Icons.Filled.Share,
                 contentDescription = "Share")
         } ,
-        text ="Поделиться приложением")
+        text = stringResource(R.string.share_app))
     SettingsElement(
+        onClick = {
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf("yuracolicov@gmail.com"))
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    context.getString(R.string.message_to_developer)
+                )
+                putExtra(Intent.EXTRA_TEXT, "Спасибо разработчикам за крутое приложение")
+            }
+            context.startActivity(intent)
+
+        },
         icon = {
             Icon(
-//                modifier = it,
                 painter = painterResource( R.drawable.ic_helper),
                 contentDescription = "Support")
         },
-        text = "Написать в поддержку")
+        text = stringResource(R.string.write_to_support)
+    )
+
     SettingsElement(
+        onClick = {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://yandex.ru/legal/practicum_offer/")
+            }
+            context.startActivity(intent)
+        },
         icon = {
             Icon(
-//                modifier = it,
+
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "Agreement")
         },
-        text = "Пользовательское соглашение")
+        text = stringResource(R.string.user_agreement)
+    )
 
 
 
@@ -110,12 +146,14 @@ fun SettingsScreen() {
 
 
 @Composable
-fun SettingsElement(icon: @Composable () -> Unit, text: String) {
+fun SettingsElement(icon: @Composable () -> Unit, text: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .clickable{},
+            .clickable {
+                onClick()
+            },
 
     ) {
         Row(
@@ -144,7 +182,7 @@ fun SettingsElement(text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .clickable {  },
+            .clickable { },
 
         ) {
         Row(

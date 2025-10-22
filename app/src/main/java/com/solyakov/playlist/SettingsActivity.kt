@@ -20,7 +20,7 @@ class SettingsActivity: ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlaylistTheme { ->
-                    SettingsScreen()
+                    SettingsScreen({})
             }
         }
     }

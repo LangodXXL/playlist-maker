@@ -32,12 +32,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.solyakov.playlist.R
 
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(onClick: () -> Unit) {
 
     var inputText by rememberSaveable { mutableStateOf("") }
 
@@ -51,7 +53,7 @@ fun SearchScreen() {
         title = {
             Text(
                 modifier = Modifier.padding(start = 16.dp),
-                text = "Поиск",
+                text = stringResource(R.string.search),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -61,9 +63,11 @@ fun SearchScreen() {
                 modifier = Modifier
                     .padding(start = 16.dp)
                     .size(32.dp)
-                    .clickable {},
+                    .clickable {
+                        onClick()
+                    },
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.colorScheme.onBackground
             )
         }

@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,7 +51,9 @@ import com.solyakov.playlist.SettingsActivity
 
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -66,18 +69,24 @@ fun MainScreen(
         ) {
             Text(
                 modifier = Modifier.padding(start = 12.dp, top = 24.dp),
-                text = "Playlist maker",
+                text = stringResource(R.string.playlist_maker),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
         }
-            ScreenContent()
+            ScreenContent(
+                onSearchClick = {onSearchClick()},
+                onSettingsClick = {onSettingsClick()}
+            )
     }
 }
 
 @Composable
-fun ScreenContent() {
+fun ScreenContent(
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -92,31 +101,30 @@ fun ScreenContent() {
             val context = LocalContext.current
             Element(
                 screenIcon = Icons.Default.Search,
-                text = "Поиск",
+                text = stringResource(R.string.search),
                 onClick = {
-                    val intent = Intent(context, SeacrhActivity::class.java)
-                    context.startActivity(intent)
+                    onSearchClick()
                 }
             )
 
             Element(
                 painterIcon = painterResource(R.drawable.vector),
-                text = "Плейлист",
+                text = stringResource(R.string.playlist),
                 onClick = {  }
             )
 
             Element(
                 screenIcon = Icons.Default.FavoriteBorder,
-                text = "Избранное",
+                text = stringResource(R.string.favourites),
                 onClick = { }
             )
 
             Element(
                 screenIcon = Icons.Default.Settings,
-                text = "Настройки",
+                text = stringResource(R.string.settings),
                 onClick = {
-                    val intent = Intent(context, SettingsActivity::class.java)
-                    context.startActivity(intent)
+                    onSettingsClick()
+
                 }
             )
         }
@@ -177,7 +185,7 @@ private fun ElementContent(icon: @Composable () -> Unit, text: String) {
         }
         Icon(
             imageVector = Icons.Default.KeyboardArrowRight,
-            contentDescription = "Перейти",
+            contentDescription = stringResource(R.string.back),
             tint = Color.Gray
         )
     }
