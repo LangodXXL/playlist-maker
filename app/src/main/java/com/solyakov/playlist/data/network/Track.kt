@@ -1,4 +1,4 @@
-package com.solyakov.playlist.domain.models
+package com.solyakov.playlist.data.network
 
 data class Track(
     val trackName: String,

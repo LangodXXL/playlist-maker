@@ -1,4 +1,4 @@
-package com.solyakov.playlist.data
+package com.solyakov.playlist.domain.api
 
 import com.solyakov.playlist.data.dto.BaseResponse
 

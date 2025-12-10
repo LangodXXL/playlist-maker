@@ -1,7 +1,7 @@
 package com.solyakov.playlist.domain.api
 
-import com.solyakov.playlist.domain.models.Track
+import com.solyakov.playlist.data.network.Track
 
 interface TracksRepository {
-    fun searchTracks(expression: String): List<Track>
+    suspend fun searchTracks(expression: String): List<Track>
 }
