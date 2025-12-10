@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.solyakov.playlist.presentation.MainScreen
-import com.solyakov.playlist.presentation.SearchScreen
-import com.solyakov.playlist.presentation.SettingsScreen
+import com.solyakov.playlist.ui.MainScreen
+import com.solyakov.playlist.ui.SearchScreen
+import com.solyakov.playlist.ui.SettingsScreen
 
 enum class ScreenRoute(val route: String) {
     Start("start"),

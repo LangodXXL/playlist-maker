@@ -1,20 +1,22 @@
-package com.solyakov.playlist
+package com.solyakov.playlist.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.solyakov.playlist.presentation.SearchScreen
+import androidx.navigation.compose.rememberNavController
+import com.solyakov.playlist.PlaylistHost
 import com.solyakov.playlist.ui.theme.PlaylistTheme
 
-class SeacrhActivity: ComponentActivity() {
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PlaylistTheme {
-                SearchScreen({})
+                val navController = rememberNavController()
+                val playlistHost = PlaylistHost(navController)
+                playlistHost.NavGraph()
             }
         }
     }
