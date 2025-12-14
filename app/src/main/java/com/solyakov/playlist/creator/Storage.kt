@@ -1,6 +1,9 @@
 package com.solyakov.playlist.creator
 
 import com.solyakov.playlist.data.dto.TrackDto
+import com.solyakov.playlist.data.network.RetrofitNetworkClient
+import com.solyakov.playlist.data.network.TracksRepositoryImpl
+import com.solyakov.playlist.domain.api.TracksRepository
 
 class Storage {
     private val listTracks = listOf(
@@ -63,5 +66,12 @@ class Storage {
                 .contains(request.lowercase())
         }
         return result
+    }
+}
+
+
+object Creator {
+    fun getTracksRepository(): TracksRepository {
+        return TracksRepositoryImpl(RetrofitNetworkClient(Storage()))
     }
 }
