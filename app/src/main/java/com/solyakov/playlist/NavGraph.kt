@@ -1,12 +1,16 @@
 package com.solyakov.playlist
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.solyakov.playlist.ui.MainScreen
+import com.solyakov.playlist.ui.MySearchScreen
 import com.solyakov.playlist.ui.SearchScreen
 import com.solyakov.playlist.ui.SettingsScreen
+import com.solyakov.playlist.ui.view_model.SearchViewModel
 
 enum class ScreenRoute(val route: String) {
     Start("start"),
@@ -15,7 +19,8 @@ enum class ScreenRoute(val route: String) {
 }
 
 class PlaylistHost(
-    private val navController: NavHostController
+    private val navController: NavHostController,
+    private val viewModel: SearchViewModel
 ) {
     private fun navigateToSearch() {
         navController.navigate(ScreenRoute.Search.route)
@@ -41,7 +46,10 @@ class PlaylistHost(
                 )
             }
             composable(ScreenRoute.Search.route) {
-                SearchScreen(onClick = { navigateBack() })
+//                MySearchScreen(onClick = { navigateBack() })
+                SearchScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    viewModel = viewModel)
             }
             composable(ScreenRoute.Settings.route) {
                 SettingsScreen(onClick = { navigateBack() })

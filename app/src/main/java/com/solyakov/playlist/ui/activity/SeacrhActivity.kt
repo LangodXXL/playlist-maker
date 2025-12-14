@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.solyakov.playlist.ui.SearchScreen
+import com.solyakov.playlist.ui.MySearchScreen
 import com.solyakov.playlist.ui.theme.PlaylistTheme
 
 class SeacrhActivity: ComponentActivity() {
@@ -14,7 +14,7 @@ class SeacrhActivity: ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlaylistTheme {
-                SearchScreen({})
+                MySearchScreen({})
             }
         }
     }
