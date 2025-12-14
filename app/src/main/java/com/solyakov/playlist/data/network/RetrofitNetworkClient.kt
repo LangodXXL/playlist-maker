@@ -1,6 +1,6 @@
 package com.solyakov.playlist.data.network
 
-import com.solyakov.playlist.Storage
+import com.solyakov.playlist.creator.Storage
 import com.solyakov.playlist.domain.api.NetworkClient
 import com.solyakov.playlist.data.dto.TracksSearchRequest
 import com.solyakov.playlist.data.dto.TracksSearchResponse

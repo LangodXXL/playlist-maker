@@ -74,6 +74,7 @@ fun SearchScreen(onClick: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             value = inputText,
+            placeholder = {Text(text = stringResource(R.string.search))},
             onValueChange = { inputText = it },
             trailingIcon = {
                 if (inputText.isNotEmpty()) {

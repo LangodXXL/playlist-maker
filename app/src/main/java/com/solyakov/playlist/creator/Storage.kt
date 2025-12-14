@@ -1,4 +1,4 @@
-package com.solyakov.playlist
+package com.solyakov.playlist.creator
 
 import com.solyakov.playlist.data.dto.TrackDto
 
