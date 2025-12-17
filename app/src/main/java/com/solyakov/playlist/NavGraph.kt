@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.solyakov.playlist.ui.MainScreen
-import com.solyakov.playlist.ui.MySearchScreen
 import com.solyakov.playlist.ui.SearchScreen
 import com.solyakov.playlist.ui.SettingsScreen
 import com.solyakov.playlist.ui.view_model.SearchViewModel
@@ -46,8 +45,8 @@ class PlaylistHost(
                 )
             }
             composable(ScreenRoute.Search.route) {
-//                MySearchScreen(onClick = { navigateBack() })
                 SearchScreen(
+                    onClick = { navigateBack() },
                     modifier = Modifier.fillMaxSize(),
                     viewModel = viewModel)
             }
