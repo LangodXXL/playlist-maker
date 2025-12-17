@@ -62,44 +62,46 @@ fun SearchScreen(onClick: () -> Unit,
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
 
-    ) { TopAppBar(
-        modifier = Modifier,
-        title = {
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = stringResource(R.string.search),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        },
-        navigationIcon = {
-            Icon(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .size(32.dp)
-                    .clickable {
-                        onClick()
-                    },
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-        }
-    )
+    ) {
+        TopAppBar(
+            modifier = Modifier,
+            title = {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = stringResource(R.string.search),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
+            navigationIcon = {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .size(32.dp)
+                        .clickable {
+                            onClick()
+                        },
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        )
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             value = inputText,
-            placeholder = {Text(text = stringResource(R.string.search))},
+            placeholder = { Text(text = stringResource(R.string.search)) },
             onValueChange = {
                 inputText = it
                 viewModel.search(it)
-                },
+
+            },
             trailingIcon = {
                 if (inputText.isNotEmpty()) {
                     Icon(
-                        modifier = Modifier.clickable{
+                        modifier = Modifier.clickable {
                             inputText = ""
                         },
                         imageVector = Icons.Default.Clear,
@@ -109,7 +111,7 @@ fun SearchScreen(onClick: () -> Unit,
             },
             leadingIcon = {
                 Icon(
-                    modifier = Modifier.clickable{
+                    modifier = Modifier.clickable {
                         viewModel.search(inputText)
                     },
                     imageVector = Icons.Default.Search,
@@ -129,37 +131,63 @@ fun SearchScreen(onClick: () -> Unit,
                 focusedTrailingIconColor = Color.Black,
                 unfocusedTrailingIconColor = Color.Black
             ),
-            shape = RoundedCornerShape(size = 16.dp))
+            shape = RoundedCornerShape(size = 16.dp)
+        )
 
-    when (screenState) {
-        is SearchState.Initial -> {
-            Box(modifier = modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp), contentAlignment = Alignment.Center) {
-                Text("Введите строку для поиска")
+        when (screenState) {
+            is SearchState.Initial -> {
+                Box(
+                    modifier = modifier.fillMaxSize()
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Введите строку для поиска")
+                }
             }
-        }
-        is SearchState.Searching -> {
-            Box(modifier = modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+
+            is SearchState.Searching -> {
+                Box(
+                    modifier = modifier.fillMaxSize()
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        }
-        is SearchState.Success -> {
-            val tracks = (screenState as SearchState.Success).foundList
-            LazyColumn(
-                modifier = modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            ) {
-                items(tracks.size) { index ->
-                    TrackListItem(track = tracks[index])
-                    HorizontalDivider(thickness = 0.5.dp)
+
+            is SearchState.Success -> {
+                val tracks = (screenState as SearchState.Success).foundList
+                if (tracks.isEmpty()) {
+                    Box(
+                        modifier = modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Ничего не нашлось")
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = modifier.fillMaxSize()
+                            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                    ) {
+                        items(tracks.size) { index ->
+                            TrackListItem(track = tracks[index])
+                            HorizontalDivider(thickness = 0.5.dp)
+                        }
+                    }
+                }
+
+            }
+            is SearchState.Fail -> {
+                val error = (screenState as SearchState.Fail).error
+                Box(
+                    modifier = modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Ошибка: $error", color = Color.Red)
                 }
             }
         }
-        is SearchState.Fail -> {
-            val error = (screenState as SearchState.Fail).error
-            Box(modifier = modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp), contentAlignment = Alignment.Center) {
-                Text("Ошибка: $error", color = Color.Red)
-            }
-        }
-    }}
+    }
 }
 
 
@@ -204,9 +232,3 @@ fun TrackListItem(track: Track) {
         )
     }
 }
-
-
-
-
-
-

@@ -31,7 +31,12 @@ class SearchViewModel(
             try {
                 _searchScreenState.update { SearchState.Searching }
                 val list = tracksRepository.searchTracks(expression = whatSearch)
-                _searchScreenState.update { SearchState.Success(foundList = list) }
+                if (list.isEmpty() && whatSearch.isBlank()) {
+                    _searchScreenState.update { SearchState.Initial }
+                }
+                else {
+                    _searchScreenState.update { SearchState.Success(foundList = list) }
+                }
             } catch (e: IOException){
                 _searchScreenState.update { SearchState.Fail(e.message.toString()) }
             }
