@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.solyakov.playlist.ui
+package com.solyakov.playlist.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
