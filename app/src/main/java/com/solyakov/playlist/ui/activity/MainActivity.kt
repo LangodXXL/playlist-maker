@@ -9,11 +9,12 @@ import androidx.navigation.compose.rememberNavController
 import com.solyakov.playlist.PlaylistHost
 import com.solyakov.playlist.ui.theme.PlaylistTheme
 import com.solyakov.playlist.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private val searchViewModel by viewModels<SearchViewModel>{
-        SearchViewModel.getViewModelFactory()
-    }
+
+    private val searchViewModel: SearchViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

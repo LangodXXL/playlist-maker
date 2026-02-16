@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.core.ktx.v1160)
     implementation(libs.androidx.compose.foundation)
     testImplementation(libs.junit)
+    implementation(libs.koin.android)
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
