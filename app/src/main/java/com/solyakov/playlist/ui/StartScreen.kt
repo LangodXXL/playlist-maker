@@ -58,7 +58,7 @@ fun MainScreen(
             contentAlignment = Alignment.TopStart
         ) {
             Text(
-                modifier = Modifier.padding(start = 12.dp, top = 24.dp),
+                modifier = Modifier.padding(start = 12.dp, top = 40.dp),
                 text = stringResource(R.string.playlist_maker),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,

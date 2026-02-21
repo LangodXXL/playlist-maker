@@ -6,7 +6,7 @@ import com.solyakov.playlist.data.network.TracksRepositoryImpl
 import com.solyakov.playlist.domain.api.TracksRepository
 
 class Storage {
-    private val listTracks = listOf(
+    val listTracks = listOf(
         TrackDto(
             trackName = "Владивосток 2000",
             artistName = "Мумий Троль",
