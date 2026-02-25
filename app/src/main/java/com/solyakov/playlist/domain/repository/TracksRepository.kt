@@ -1,4 +1,4 @@
-package com.solyakov.playlist.domain.api
+package com.solyakov.playlist.domain.repository
 
 import com.solyakov.playlist.data.network.Track
 

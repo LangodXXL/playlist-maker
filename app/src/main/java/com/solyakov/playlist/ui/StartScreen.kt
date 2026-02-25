@@ -43,7 +43,8 @@ import com.solyakov.playlist.R
 fun MainScreen(
     modifier: Modifier = Modifier,
     onSearchClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onPlaylistsClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -67,7 +68,8 @@ fun MainScreen(
         }
             ScreenContent(
                 onSearchClick = {onSearchClick()},
-                onSettingsClick = {onSettingsClick()}
+                onSettingsClick = {onSettingsClick()},
+                onPlaylistsClick = { onPlaylistsClick() }
             )
     }
 }
@@ -75,7 +77,8 @@ fun MainScreen(
 @Composable
 fun ScreenContent(
     onSearchClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onPlaylistsClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -100,7 +103,7 @@ fun ScreenContent(
             Element(
                 painterIcon = painterResource(R.drawable.vector),
                 text = stringResource(R.string.playlist),
-                onClick = {  }
+                onClick = { onPlaylistsClick() }
             )
 
             Element(
@@ -114,7 +117,6 @@ fun ScreenContent(
                 text = stringResource(R.string.settings),
                 onClick = {
                     onSettingsClick()
-
                 }
             )
         }

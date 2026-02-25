@@ -1,4 +1,4 @@
-package com.solyakov.playlist.data.dto
+package com.solyakov.playlist.data.playlist
 
 import com.solyakov.playlist.data.network.Track
 

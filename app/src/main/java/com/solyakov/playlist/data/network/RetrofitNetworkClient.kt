@@ -15,7 +15,7 @@ class RetrofitNetworkClient(private val storage: Storage) : NetworkClient {
 
     override fun getAllTracks(): List<Track> {
         return storage.listTracks.map {
-            Track(it.trackName, it.artistName, it.trackTimeMillis.toString(), null)
+            Track(0, it.trackName, it.artistName, it.trackTimeMillis.toString(), null)
         }
     }
 }

@@ -3,7 +3,7 @@ package com.solyakov.playlist.creator
 import com.solyakov.playlist.data.dto.TrackDto
 import com.solyakov.playlist.data.network.RetrofitNetworkClient
 import com.solyakov.playlist.data.network.TracksRepositoryImpl
-import com.solyakov.playlist.domain.api.TracksRepository
+import com.solyakov.playlist.domain.repository.TracksRepository
 
 class Storage {
     val listTracks = listOf(

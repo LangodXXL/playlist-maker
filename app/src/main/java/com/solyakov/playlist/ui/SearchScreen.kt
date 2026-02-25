@@ -26,7 +26,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -60,13 +59,13 @@ import androidx.compose.ui.unit.sp
 import com.solyakov.playlist.R
 import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.ui.view_model.SearchState
-import com.solyakov.playlist.ui.view_model.SearchViewModel
+import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 
 
 @Composable
 fun SearchScreen(onClick: () -> Unit,
                  modifier: Modifier,
-                 viewModel: SearchViewModel) {
+                 viewModel: SearchScreenViewModel) {
     val screenState by viewModel.searchScreenState.collectAsState()
     var inputText by remember { mutableStateOf(TextFieldValue("")) }
     val historyRequests by viewModel.historyRepository.getHistory().collectAsState(emptyList())
@@ -147,7 +146,7 @@ fun SearchScreen(onClick: () -> Unit,
                         Icon(
                             modifier = Modifier.clickable {
                                 inputText = TextFieldValue("")
-                                viewModel.search(inputText.text)
+                                viewModel.clearQuery()
                             },
                             imageVector = Icons.Default.Clear,
                             contentDescription = null

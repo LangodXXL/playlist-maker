@@ -7,19 +7,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.solyakov.playlist.ui.MainScreen
+import com.solyakov.playlist.ui.PlaylistsScreen
 import com.solyakov.playlist.ui.SearchScreen
 import com.solyakov.playlist.ui.SettingsScreen
-import com.solyakov.playlist.ui.view_model.SearchViewModel
+import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
+import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 
 enum class ScreenRoute(val route: String) {
     Start("start"),
     Search("search"),
-    Settings("settings")
+    Settings("settings"),
+
+    Playlists("playlists")
 }
 
 class PlaylistHost(
     private val navController: NavHostController,
-    private val viewModel: SearchViewModel
+    private val searchViewModel: SearchScreenViewModel,
+    private val playlistsViewModel: PlaylistsViewModel
 ) {
     private fun navigateToSearch() {
         navController.navigate(ScreenRoute.Search.route)
@@ -32,6 +37,10 @@ class PlaylistHost(
     private fun navigateBack() {
         navController.popBackStack()
     }
+
+    private fun navigateToPlaylists() {
+        navController.navigate(ScreenRoute.Playlists.route)
+    }
     @Composable
     fun NavGraph() {
         NavHost(
@@ -41,17 +50,28 @@ class PlaylistHost(
             composable(ScreenRoute.Start.route) {
                 MainScreen(
                     onSearchClick = { navigateToSearch() },
-                    onSettingsClick = { navigateToSettings() }
+                    onSettingsClick = { navigateToSettings() },
+                    onPlaylistsClick = { navigateToPlaylists() }
                 )
             }
             composable(ScreenRoute.Search.route) {
                 SearchScreen(
                     onClick = { navigateBack() },
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = viewModel)
+                    viewModel = searchViewModel)
             }
             composable(ScreenRoute.Settings.route) {
                 SettingsScreen(onClick = { navigateBack() })
+            }
+            composable(ScreenRoute.Playlists.route) {
+                PlaylistsScreen(
+                    modifier = Modifier,
+                    playlistsViewModel = playlistsViewModel,
+                    addNewPlaylist = { },
+                    navigateToPlaylist = { },
+                    navigateBack = { navigateBack() }
+                )
+
             }
         }
     }

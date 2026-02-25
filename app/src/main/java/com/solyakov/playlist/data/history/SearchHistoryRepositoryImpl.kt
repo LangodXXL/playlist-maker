@@ -9,8 +9,6 @@ import kotlinx.coroutines.launch
 
 class SearchHistoryRepositoryImpl(val scope: CoroutineScope): SearchHistoryRepository {
 
-
-
     private val historyList = ArrayDeque<String>()
 
     private val _historyState = MutableStateFlow<List<String>>(emptyList())
@@ -33,20 +31,4 @@ class SearchHistoryRepositoryImpl(val scope: CoroutineScope): SearchHistoryRepos
     }
 
     override fun getHistory(): Flow<List<String>> = _historyState.asStateFlow()
-
-
-//    private val historyList = mutableListOf<String>()
-//    private val _historyUpdates = MutableSharedFlow<Unit>()
-//
-//    fun getHistoryRequests(): Flow<List<String>> = historyList.toList()
-//
-//    fun notifyHistoryChanged() {
-//        scope.launch(Dispatchers.IO) {
-//            _historyUpdates.emit(Unit)
-//        }
-//    }
-//    fun addToHistory(word: Word) {
-//        historyList.add(word.word)
-//        notifyHistoryChanged()
-//    }
 }

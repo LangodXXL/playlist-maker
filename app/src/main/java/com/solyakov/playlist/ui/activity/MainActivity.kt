@@ -4,16 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.navigation.compose.rememberNavController
 import com.solyakov.playlist.PlaylistHost
 import com.solyakov.playlist.ui.theme.PlaylistTheme
-import com.solyakov.playlist.ui.view_model.SearchViewModel
+import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
+import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
 
-    private val searchViewModel: SearchViewModel by viewModel()
+    private val searchViewModel: SearchScreenViewModel by viewModel()
+    private val playlistsViewModel: PlaylistsViewModel by viewModel()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PlaylistTheme {
                 val navController = rememberNavController()
-                val playlistHost = PlaylistHost(navController, searchViewModel)
+                val playlistHost = PlaylistHost(navController, searchViewModel, playlistsViewModel)
                 playlistHost.NavGraph()
             }
         }
