@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
+    implementation(libs.gson)
     implementation(libs.koin.android)
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.junit)
