@@ -1,21 +1,37 @@
 package com.solyakov.playlist.data.network
 
-import com.solyakov.playlist.creator.Storage
-import com.solyakov.playlist.data.dto.TrackDto
+import com.solyakov.playlist.data.dto.BaseResponse
+import com.solyakov.playlist.data.dto.TrackSearchByIdRequest
 import com.solyakov.playlist.domain.api.NetworkClient
 import com.solyakov.playlist.data.dto.TracksSearchRequest
-import com.solyakov.playlist.data.dto.TracksSearchResponse
+import java.io.IOException
 
-class RetrofitNetworkClient(private val storage: Storage) : NetworkClient {
+class RetrofitNetworkClient(private val api: ITunesApiService) : NetworkClient {
 
-    override fun doRequest(request: Any): TracksSearchResponse {
-        val searchList = storage.search((request as TracksSearchRequest).expression)
-        return TracksSearchResponse(searchList).apply { resultCode = 200 }
-    }
-
-    override fun getAllTracks(): List<Track> {
-        return storage.listTracks.map {
-            Track(0, it.trackName, it.artistName, it.trackTimeMillis.toString(), null)
+    override suspend fun doRequest(dto: Any): BaseResponse {
+        return try {
+            when (dto) {
+            is TracksSearchRequest -> {
+                api.searchTracks(
+                    query = dto.expression,
+                    media = "music",
+                    entity = "song",
+                    limit = 50
+                ).apply { resultCode = 200 }
+            }
+                is TrackSearchByIdRequest -> {
+                    api.lookupTrackById(trackId = dto.trackId).apply { resultCode = 200 }
+                }
+                else -> {
+                    BaseResponse().apply { resultCode = 400 }
+                }
+            }
+        }
+        catch (e: IOException) {
+            BaseResponse().apply { resultCode = -1 }
+        } catch (e: Exception) {
+            BaseResponse().apply { resultCode = -2 }
         }
     }
 }
+

@@ -8,5 +8,5 @@ data class Track(
     val trackTime: String,
     val playlistId: Long?,
     var favorite: Boolean = false,
-
+    val image: String?
 )

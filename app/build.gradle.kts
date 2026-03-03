@@ -31,9 +31,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
     }
@@ -54,6 +51,12 @@ dependencies {
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     implementation(libs.gson)
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.3.3")
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.converter.gson)
     implementation(libs.koin.android)
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.junit)
@@ -63,4 +66,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.compose.material.icons.extended)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
 }

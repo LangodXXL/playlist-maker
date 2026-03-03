@@ -65,7 +65,9 @@ import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 @Composable
 fun SearchScreen(onClick: () -> Unit,
                  modifier: Modifier,
-                 viewModel: SearchScreenViewModel) {
+                 viewModel: SearchScreenViewModel,
+                 onTrackClick: (Long) -> Unit
+) {
     val screenState by viewModel.searchScreenState.collectAsState()
     var inputText by remember { mutableStateOf(TextFieldValue("")) }
     val historyRequests by viewModel.historyRepository.getHistory().collectAsState(emptyList())
@@ -234,7 +236,11 @@ fun SearchScreen(onClick: () -> Unit,
                                     .padding(start = 16.dp, end = 16.dp)
                             ) {
                                 items(tracks.size) { index ->
-                                    TrackListItem(track = tracks[index])
+                                    TrackListItem(
+                                        track = tracks[index],
+                                        onClick = { onTrackClick(tracks[index].trackId) }
+
+                                    )
                                     HorizontalDivider(thickness = 0.5.dp)
                                 }
                             }
@@ -261,9 +267,16 @@ fun SearchScreen(onClick: () -> Unit,
 
 
 @Composable
-fun TrackListItem(track: Track) {
+fun TrackListItem(
+    track: Track,
+    onClick: (Long) -> Unit
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick(track.trackId)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

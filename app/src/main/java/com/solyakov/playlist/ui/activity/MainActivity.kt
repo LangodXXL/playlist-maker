@@ -9,6 +9,7 @@ import com.solyakov.playlist.PlaylistHost
 import com.solyakov.playlist.ui.theme.PlaylistTheme
 import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
+import com.solyakov.playlist.ui.view_model.TrackViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -16,6 +17,8 @@ class MainActivity : ComponentActivity() {
 
     private val searchViewModel: SearchScreenViewModel by viewModel()
     private val playlistsViewModel: PlaylistsViewModel by viewModel()
+    private val trackViewModel: TrackViewModel by viewModel()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             PlaylistTheme {
                 val navController = rememberNavController()
-                val playlistHost = PlaylistHost(navController, searchViewModel, playlistsViewModel)
+                val playlistHost = PlaylistHost(
+                    navController,
+                    searchViewModel,
+                    playlistsViewModel,
+                    trackViewModel
+                )
                 playlistHost.NavGraph()
             }
         }
