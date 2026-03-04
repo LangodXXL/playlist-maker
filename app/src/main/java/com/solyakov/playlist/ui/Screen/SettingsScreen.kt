@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.solyakov.playlist.ui
+package com.solyakov.playlist.ui.Screen
 
 import android.content.Intent
 import android.net.Uri

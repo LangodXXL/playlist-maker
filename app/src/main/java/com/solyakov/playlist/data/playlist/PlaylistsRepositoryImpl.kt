@@ -26,7 +26,8 @@ class PlaylistsRepositoryImpl(): PlaylistsRepository {
                 id = _playlists.value.size.toLong() + 1,
                 name = name,
                 description = description,
-                tracks = emptyList()
+                tracks = emptyList(),
+                image = null
             )
             currentList + newPlaylist
         }

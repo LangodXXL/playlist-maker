@@ -3,23 +3,14 @@ package com.solyakov.playlist.ui.view_model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.solyakov.playlist.data.network.Track
-import com.solyakov.playlist.data.playlist.Playlist
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
     private val playlistsRepository: PlaylistsRepository
 ) : ViewModel() {
-    val playlists: Flow<List<Playlist>> = flow {
-        val collectedPlaylists = mutableListOf<Playlist>()
-        playlistsRepository.getAllPlaylists().collect { playlist ->
-            collectedPlaylists.addAll(playlist)
-            emit(collectedPlaylists.toList())
-        }
-    }
+    val playlists = playlistsRepository.getAllPlaylists()
 
     fun createNewPlayList(namePlaylist: String, description: String) {
         viewModelScope.launch(Dispatchers.IO) {

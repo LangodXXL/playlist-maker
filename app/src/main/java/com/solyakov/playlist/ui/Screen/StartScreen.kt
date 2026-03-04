@@ -1,4 +1,4 @@
-package com.solyakov.playlist.ui
+package com.solyakov.playlist.ui.Screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

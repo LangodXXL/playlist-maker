@@ -1,6 +1,7 @@
 package com.solyakov.playlist.ui.di
 
 import com.solyakov.playlist.data.network.Track
+import com.solyakov.playlist.ui.view_model.AddPlaylistScreenViewModel
 import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 import com.solyakov.playlist.ui.view_model.TrackViewModel
@@ -17,5 +18,8 @@ val viewModelModule = module {
     }
     viewModel {
         TrackViewModel(get(), get())
+    }
+    viewModel {
+        AddPlaylistScreenViewModel(get())
     }
 }

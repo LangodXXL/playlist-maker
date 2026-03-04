@@ -3,8 +3,10 @@ package com.solyakov.playlist.ui.view_model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.solyakov.playlist.data.network.Track
+import com.solyakov.playlist.data.playlist.Playlist
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -39,6 +41,11 @@ class TrackViewModel(
         scope.launch {
             playlistRepository.insertTrackToPlaylist(track, playlistId)
         }
+    }
+
+
+    fun getAllPlaylists(): Flow<List<Playlist>> {
+           return playlistRepository.getAllPlaylists()
     }
 
     fun getTrackById(trackId: Long) {

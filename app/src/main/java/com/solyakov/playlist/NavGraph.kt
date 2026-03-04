@@ -1,6 +1,5 @@
 package com.solyakov.playlist
 
-import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,11 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.solyakov.playlist.ui.MainScreen
-import com.solyakov.playlist.ui.PlaylistsScreen
-import com.solyakov.playlist.ui.SearchScreen
-import com.solyakov.playlist.ui.SettingsScreen
-import com.solyakov.playlist.ui.TrackScreen
+import com.solyakov.playlist.ui.Screen.AddPlaylistScreen
+import com.solyakov.playlist.ui.Screen.MainScreen
+import com.solyakov.playlist.ui.Screen.PlaylistsScreen
+import com.solyakov.playlist.ui.Screen.SearchScreen
+import com.solyakov.playlist.ui.Screen.SettingsScreen
+import com.solyakov.playlist.ui.Screen.TrackScreen
+import com.solyakov.playlist.ui.view_model.AddPlaylistScreenViewModel
 import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 import com.solyakov.playlist.ui.view_model.TrackViewModel
@@ -29,13 +30,16 @@ sealed class ScreenRoute(val route: String) {
             return "track/${trackId}"
         }
     }
+
+    data object AddPlaylist: ScreenRoute("add_playlist")
 }
 
 class PlaylistHost(
     private val navController: NavHostController,
     private val searchViewModel: SearchScreenViewModel,
     private val playlistsViewModel: PlaylistsViewModel,
-    private val trackViewModel: TrackViewModel
+    private val trackViewModel: TrackViewModel,
+    private val addPlaylistViewModel: AddPlaylistScreenViewModel
 ) {
     private fun navigateToSearch() {
         navController.navigate(ScreenRoute.Search.route)
@@ -56,6 +60,10 @@ class PlaylistHost(
     private fun navigateToTrack(trackId: Long) {
         navController.navigate(ScreenRoute.Track.createRoute(trackId))
     }
+    private fun navigateToAddPlaylist() {
+        navController.navigate(ScreenRoute.AddPlaylist.route)
+    }
+
     @Composable
     fun NavGraph() {
         NavHost(
@@ -86,7 +94,9 @@ class PlaylistHost(
                 PlaylistsScreen(
                     modifier = Modifier,
                     playlistsViewModel = playlistsViewModel,
-                    addNewPlaylist = { },
+                    addNewPlaylist = {
+                        navigateToAddPlaylist()
+                    },
                     navigateToPlaylist = { },
                     navigateBack = { navigateBack() }
                 )
@@ -98,6 +108,13 @@ class PlaylistHost(
                 }
                 TrackScreen(
                     viewModel = trackViewModel,
+                    onBackClick = { navigateBack() }
+                )
+            }
+
+            composable(route = ScreenRoute.AddPlaylist.route) {
+                AddPlaylistScreen(
+                    viewModel = addPlaylistViewModel,
                     onBackClick = { navigateBack() }
                 )
             }

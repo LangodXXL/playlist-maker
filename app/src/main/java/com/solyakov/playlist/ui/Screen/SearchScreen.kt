@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.solyakov.playlist.ui
+package com.solyakov.playlist.ui.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,10 +43,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,6 +60,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.SubcomposeAsyncImage
 import com.solyakov.playlist.R
 import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.ui.view_model.SearchState
@@ -125,7 +130,7 @@ fun SearchScreen(onClick: () -> Unit,
                     .padding(horizontal = 16.dp)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
-                            isFocused = it.isFocused
+                        isFocused = it.isFocused
                     },
                 singleLine = true,
                 keyboardActions = KeyboardActions(
@@ -280,9 +285,24 @@ fun TrackListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.vector),
-            contentDescription = "Трек ${track.trackName}"
+
+        SubcomposeAsyncImage(
+            model = track.image,
+            contentDescription = "Трек ${track.trackName}",
+            modifier = Modifier
+                .size(45.dp)
+                .clip(RoundedCornerShape(2.dp)),
+            contentScale = ContentScale.Crop,
+            loading = {
+                Image(
+                    painter = painterResource(id = R.drawable.vector),
+                    contentDescription = "Album",
+                    modifier = Modifier
+                        .background(Color.LightGray.copy(alpha = 0.5f))
+                        .alpha(0.4f),
+                    colorFilter = ColorFilter.tint(Color.Gray)
+                )
+            }
         )
         Spacer(Modifier.width(8.dp))
         Column(

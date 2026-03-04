@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.solyakov.playlist.PlaylistHost
 import com.solyakov.playlist.ui.theme.PlaylistTheme
+import com.solyakov.playlist.ui.view_model.AddPlaylistScreenViewModel
 import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 import com.solyakov.playlist.ui.view_model.TrackViewModel
@@ -18,6 +19,8 @@ class MainActivity : ComponentActivity() {
     private val searchViewModel: SearchScreenViewModel by viewModel()
     private val playlistsViewModel: PlaylistsViewModel by viewModel()
     private val trackViewModel: TrackViewModel by viewModel()
+    private val addPlaylistViewModel: AddPlaylistScreenViewModel by viewModel()
+
 
 
 
@@ -31,7 +34,8 @@ class MainActivity : ComponentActivity() {
                     navController,
                     searchViewModel,
                     playlistsViewModel,
-                    trackViewModel
+                    trackViewModel,
+                    addPlaylistViewModel
                 )
                 playlistHost.NavGraph()
             }
