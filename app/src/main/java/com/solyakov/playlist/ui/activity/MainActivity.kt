@@ -10,6 +10,7 @@ import com.solyakov.playlist.ui.theme.PlaylistTheme
 import com.solyakov.playlist.ui.view_model.AddPlaylistScreenViewModel
 import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
+import com.solyakov.playlist.ui.view_model.TracksInPlaylistViewModel
 import com.solyakov.playlist.ui.view_model.TrackViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
@@ -20,6 +21,8 @@ class MainActivity : ComponentActivity() {
     private val playlistsViewModel: PlaylistsViewModel by viewModel()
     private val trackViewModel: TrackViewModel by viewModel()
     private val addPlaylistViewModel: AddPlaylistScreenViewModel by viewModel()
+    private val trackInPlaylistViewModel: TracksInPlaylistViewModel by viewModel()
+
 
 
 
@@ -35,7 +38,8 @@ class MainActivity : ComponentActivity() {
                     searchViewModel,
                     playlistsViewModel,
                     trackViewModel,
-                    addPlaylistViewModel
+                    addPlaylistViewModel,
+                    trackInPlaylistViewModel
                 )
                 playlistHost.NavGraph()
             }

@@ -12,11 +12,13 @@ import com.solyakov.playlist.ui.Screen.MainScreen
 import com.solyakov.playlist.ui.Screen.PlaylistsScreen
 import com.solyakov.playlist.ui.Screen.SearchScreen
 import com.solyakov.playlist.ui.Screen.SettingsScreen
+import com.solyakov.playlist.ui.Screen.TracksInPlaylistScreen
 import com.solyakov.playlist.ui.Screen.TrackScreen
 import com.solyakov.playlist.ui.view_model.AddPlaylistScreenViewModel
 import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 import com.solyakov.playlist.ui.view_model.TrackViewModel
+import com.solyakov.playlist.ui.view_model.TracksInPlaylistViewModel
 
 sealed class ScreenRoute(val route: String) {
     data object Start: ScreenRoute("start")
@@ -30,6 +32,11 @@ sealed class ScreenRoute(val route: String) {
             return "track/${trackId}"
         }
     }
+    data object TracksInPlaylist: ScreenRoute("tracks_in_playlist/{playlistId}") {
+        fun createRoute(playlistId: Long): String {
+            return "tracks_in_playlist/${playlistId}"
+        }
+    }
 
     data object AddPlaylist: ScreenRoute("add_playlist")
 }
@@ -39,7 +46,8 @@ class PlaylistHost(
     private val searchViewModel: SearchScreenViewModel,
     private val playlistsViewModel: PlaylistsViewModel,
     private val trackViewModel: TrackViewModel,
-    private val addPlaylistViewModel: AddPlaylistScreenViewModel
+    private val addPlaylistViewModel: AddPlaylistScreenViewModel,
+    private val trackInPlaylistViewModel: TracksInPlaylistViewModel
 ) {
     private fun navigateToSearch() {
         navController.navigate(ScreenRoute.Search.route)
@@ -63,6 +71,11 @@ class PlaylistHost(
     private fun navigateToAddPlaylist() {
         navController.navigate(ScreenRoute.AddPlaylist.route)
     }
+
+    private fun navigateToTracksInPlaylist(playlistId: Long) {
+        navController.navigate(ScreenRoute.TracksInPlaylist.createRoute(playlistId))
+    }
+
 
     @Composable
     fun NavGraph() {
@@ -97,7 +110,9 @@ class PlaylistHost(
                     addNewPlaylist = {
                         navigateToAddPlaylist()
                     },
-                    navigateToPlaylist = { },
+                    navigateToPlaylist = {
+                        navigateToTracksInPlaylist(playlistId = it) // Проблема
+                    },
                     navigateBack = { navigateBack() }
                 )
             }
@@ -109,6 +124,19 @@ class PlaylistHost(
                 TrackScreen(
                     viewModel = trackViewModel,
                     onBackClick = { navigateBack() }
+                )
+            }
+
+            composable(ScreenRoute.TracksInPlaylist.route) {
+                val playlistId = it.arguments?.getString("playlistId")?.toLong() ?: 0
+                LaunchedEffect(playlistId) {
+                    trackInPlaylistViewModel.getAllTracksInPlaylist(playlistId)
+                }
+                TracksInPlaylistScreen(
+                    viewModel = trackInPlaylistViewModel,
+                    playlistId = playlistId,
+                    onBackClick = { navigateBack() },
+                    onTrackClick = { navigateToTrack(it.trackId) }
                 )
             }
 

@@ -18,11 +18,13 @@ interface PlaylistsRepository {
 
     fun getFavoriteTracks(): Flow<List<Track>>
 
-    fun insertTrackToPlaylist(track: Track, playlistId: Long)
+    suspend fun insertTrackToPlaylist(track: Track, playlistId: Long)
 
     suspend fun toggleFavorite(track: Track)
 
     suspend fun deletePlaylistById(id: Long)
+
+    suspend fun getAllTrackInPlaylist(playlistId: Long): List<Track>
 }
 
 

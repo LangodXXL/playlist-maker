@@ -2,6 +2,7 @@
 
 package com.solyakov.playlist.ui.Screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,13 +35,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -51,6 +51,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.solyakov.playlist.R
+import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.data.playlist.Playlist
 import com.solyakov.playlist.ui.view_model.TrackScreenState
 import com.solyakov.playlist.ui.view_model.TrackViewModel
@@ -91,11 +92,26 @@ fun TrackScreen(
 
         is TrackScreenState.Success -> {
             val track = (trackScreenState as TrackScreenState.Success).track
+            Log.d("TrackScreen", "Track: $track")
             LaunchedEffect(track.trackId) {
                 isLoaded = false
             }
+            PlaylistsSheet(
+                track = track,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onDismiss = {
+                    showBottomSheet = false
+                },
+                playlists = playlists,
+                addTrackToPlaylist = {
+                        track, playlistId ->
+                    viewModel.addTrackInPlaylist(track, playlistId)
+                }
+            )
             Column(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(horizontal = 24.dp)
             ) {
                 TopAppBar(
@@ -135,6 +151,9 @@ fun TrackScreen(
                             .data(track.image)
                             .crossfade(true)
                             .listener(
+                                onStart = {
+                                    isLoaded = false
+                                },
                                 onSuccess = { _, _ ->
                                     isLoaded = true
                                 },
@@ -146,7 +165,6 @@ fun TrackScreen(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .alpha(if (isLoaded) 1f else 0f)
                     )
                 }
                 Text(
@@ -161,7 +179,7 @@ fun TrackScreen(
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     FloatingActionButton(
@@ -173,16 +191,10 @@ fun TrackScreen(
                                 imageVector = Icons.Default.AddToPhotos,
                                 contentDescription = "Add to favorites"
                             )
-                        }
-                    )
-                    PlaylistsSheet(
-                        showBottomSheet = showBottomSheet,
-                        sheetState = sheetState,
-                        onDismiss = {
-                            showBottomSheet = false
                         },
-                        playlists = playlists
+                        shape = CircleShape
                     )
+
                     FloatingActionButton(
                         onClick = {
                             viewModel.addTrackToFavorite(track)
@@ -192,7 +204,8 @@ fun TrackScreen(
                                 imageVector = Icons.Default.FavoriteBorder,
                                 contentDescription = "Add to favorites"
                             )
-                        }
+                        },
+                        shape = CircleShape
                     )
                 }
             }
@@ -204,8 +217,10 @@ fun TrackScreen(
 
 @Composable
 fun PlaylistsSheet(
+    track: Track,
     showBottomSheet: Boolean,
     sheetState: SheetState,
+    addTrackToPlaylist: (Track, Long) -> Unit,
     onDismiss: () -> Unit,
     playlists: List<Playlist>
 ) {
@@ -222,7 +237,6 @@ fun PlaylistsSheet(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxHeight(0.7f)
-                    .fillMaxSize()
                     .padding(24.dp),
             ) {
                 items(count = playlists.size)
@@ -231,6 +245,7 @@ fun PlaylistsSheet(
                         PlaylistItem(
                             playlist = playlists[it],
                             onClick = {
+                                addTrackToPlaylist(track, playlists[it].id)
                             }
                         )
                     }
@@ -246,10 +261,18 @@ fun PlaylistItem(
     playlist: Playlist,
     onClick: () -> Unit
 ) {
-    Row() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
+
+    ) {
         AsyncImage(
             model = playlist.image,
             placeholder = painterResource(R.drawable.vector),
+            error = painterResource(R.drawable.vector),
             contentDescription = "Playlist",
             modifier = Modifier
                 .size(45.dp),

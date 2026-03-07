@@ -62,7 +62,7 @@ class PlaylistsRepositoryImpl(): PlaylistsRepository {
 
 
 
-    override fun insertTrackToPlaylist(track: Track, playlistId: Long) {
+    override suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) {
         _playlists.update {
             val targetPlaylist = _playlists.value.find { it.id == playlistId  } ?: return
             if (targetPlaylist.tracks.contains(track)) return
@@ -88,5 +88,14 @@ class PlaylistsRepositoryImpl(): PlaylistsRepository {
         _playlists.update { currentList ->
             currentList.filter { it.id != id }
         }
+    }
+
+    override suspend fun getAllTrackInPlaylist(playlistId: Long): List<Track> {
+        val targetPlaylist = _playlists.value.forEach { playlist ->
+            if (playlist.id == playlistId) {
+                return playlist.tracks
+            }
+        }
+        return emptyList()
     }
 }
