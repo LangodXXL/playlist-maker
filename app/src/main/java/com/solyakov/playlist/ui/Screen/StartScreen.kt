@@ -1,4 +1,4 @@
-package com.solyakov.playlist.ui
+package com.solyakov.playlist.ui.Screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
@@ -20,7 +21,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,7 +43,9 @@ import com.solyakov.playlist.R
 fun MainScreen(
     modifier: Modifier = Modifier,
     onSearchClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onPlaylistsClick: () -> Unit,
+    onFavoriteScreenClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -58,7 +60,7 @@ fun MainScreen(
             contentAlignment = Alignment.TopStart
         ) {
             Text(
-                modifier = Modifier.padding(start = 12.dp, top = 24.dp),
+                modifier = Modifier.padding(start = 12.dp, top = 40.dp),
                 text = stringResource(R.string.playlist_maker),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -67,7 +69,9 @@ fun MainScreen(
         }
             ScreenContent(
                 onSearchClick = {onSearchClick()},
-                onSettingsClick = {onSettingsClick()}
+                onSettingsClick = {onSettingsClick()},
+                onPlaylistsClick = { onPlaylistsClick() },
+                onFavoriteScreenClick = { onFavoriteScreenClick() }
             )
     }
 }
@@ -75,7 +79,9 @@ fun MainScreen(
 @Composable
 fun ScreenContent(
     onSearchClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onPlaylistsClick: () -> Unit,
+    onFavoriteScreenClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -100,13 +106,15 @@ fun ScreenContent(
             Element(
                 painterIcon = painterResource(R.drawable.vector),
                 text = stringResource(R.string.playlist),
-                onClick = {  }
+                onClick = { onPlaylistsClick() }
             )
 
             Element(
                 screenIcon = Icons.Default.FavoriteBorder,
                 text = stringResource(R.string.favourites),
-                onClick = { }
+                onClick = {
+                    onFavoriteScreenClick()
+                }
             )
 
             Element(
@@ -114,7 +122,6 @@ fun ScreenContent(
                 text = stringResource(R.string.settings),
                 onClick = {
                     onSettingsClick()
-
                 }
             )
         }
@@ -174,7 +181,7 @@ private fun ElementContent(icon: @Composable () -> Unit, text: String) {
             )
         }
         Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = stringResource(R.string.back),
             tint = Color.Gray
         )
