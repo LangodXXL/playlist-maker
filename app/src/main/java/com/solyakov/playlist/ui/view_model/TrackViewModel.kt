@@ -1,5 +1,6 @@
 package com.solyakov.playlist.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.solyakov.playlist.data.network.Track
@@ -28,18 +29,20 @@ class TrackViewModel(
     val screenState = _screenState.asStateFlow()
 
     private val _track = MutableStateFlow<Track?>(null)
-    fun getTrack() = _track.asStateFlow()
 
     val scope = viewModelScope
     fun addTrackToFavorite(track: Track) {
         scope.launch {
-            playlistRepository.toggleFavorite(track)
+            trackRepository.updateTrackFavoriteStatus(track)
+            val updatedTrack = track.copy(favorite = !track.favorite)
+            _track.update { updatedTrack }
+            _screenState.update { TrackScreenState.Success(updatedTrack) }
         }
     }
 
     fun addTrackInPlaylist(track: Track, playlistId: Long) {
         scope.launch {
-            playlistRepository.insertTrackToPlaylist(track, playlistId)
+            trackRepository.insertTrackToPlaylist(track, playlistId)
         }
     }
 
@@ -49,16 +52,18 @@ class TrackViewModel(
     }
 
     fun getTrackById(trackId: Long) {
-        try {
-            _screenState.update { TrackScreenState.Loading() }
-            viewModelScope.launch {
+        _screenState.update { TrackScreenState.Loading() }
+        viewModelScope.launch {
+            try {
                 val response = trackRepository.getTrackById(trackId)
                 _track.update { response }
                 _screenState.update { TrackScreenState.Success(response) }
             }
-        } catch (e: IOException) {
+         catch (e: Exception) {
             _screenState.update { TrackScreenState.Error(e.message ?: "Unknown exception") }
-        }
+
+         }
+    }
     }
 
 }

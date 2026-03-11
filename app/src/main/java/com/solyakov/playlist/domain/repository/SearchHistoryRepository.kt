@@ -1,12 +1,10 @@
-package com.solyakov.playlist.data.history
+package com.solyakov.playlist.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryRepository {
 
-    fun addToHistory(word: String)
+    suspend fun addToHistory(word: String)
 
     fun getHistory(): Flow<List<String>>
 }
-
-

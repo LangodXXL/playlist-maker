@@ -1,10 +1,16 @@
 package com.solyakov.playlist.data.di
 
 
+import android.content.Context
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
+import com.solyakov.playlist.data.database.AppDatabase
 import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
 import com.solyakov.playlist.data.network.ITunesApiService
 import com.solyakov.playlist.data.network.RetrofitNetworkClient
 import com.solyakov.playlist.data.network.TracksRepositoryImpl
+import com.solyakov.playlist.data.playlist.ImageSaver
 import com.solyakov.playlist.data.playlist.PlaylistsRepositoryImpl
 import com.solyakov.playlist.domain.api.NetworkClient
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
@@ -25,8 +31,8 @@ val dataModule = module {
     val baseUrl = "https://itunes.apple.com"
 
 
-    factory<TracksRepository> {
-        TracksRepositoryImpl(get())
+    single<TracksRepository> {
+        TracksRepositoryImpl(get(), get())
     }
 
     single<ITunesApiService> {
@@ -54,11 +60,29 @@ val dataModule = module {
     }
 
     single {
+        PreferenceDataStoreFactory.create(produceFile = { get<Context>().preferencesDataStoreFile("settings_preferences") }
+        )
+    }
+    single {
         SearchHistoryRepositoryImpl(get())
 
     }
 
     single<PlaylistsRepository> {
-        PlaylistsRepositoryImpl()
+        PlaylistsRepositoryImpl(get())
+    }
+
+    single {
+        Room.databaseBuilder(
+            get<Context>(),
+            AppDatabase::class.java,
+            "playlists_maker"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+
+    single {
+        ImageSaver(get())
+
     }
 }

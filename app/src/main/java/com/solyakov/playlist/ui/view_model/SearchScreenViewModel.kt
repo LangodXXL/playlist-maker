@@ -73,8 +73,6 @@ class SearchScreenViewModel(
                 historyRepository.addToHistory(query)
                 executeSearch(query)
             }
-
-
         }
 
     }

@@ -46,9 +46,13 @@ fun TracksInPlaylistScreen(
     viewModel: TracksInPlaylistViewModel,
     playlistId: Long,
     onBackClick: () -> Unit,
-    onTrackClick: (Track) -> Unit
+    onTrackClick: (Long) -> Unit
 ) {
     val tracks by viewModel.tracks.collectAsState()
+    Log.d("TracksInPlaylistScreen", "Tracks: $tracks")
+    val tracksCount by viewModel.tracksCount.collectAsState()
+
+
 
     LaunchedEffect(playlistId) {
         viewModel.getAllTracksInPlaylist(playlistId)
@@ -100,7 +104,7 @@ fun TracksInPlaylistScreen(
                 ) { track ->
                     TrackListItemIn(
                         track = track,
-                        onClick = { onTrackClick(track) }
+                        onClick = { onTrackClick(track.trackId) }
                     )
                 }
             }
@@ -111,13 +115,13 @@ fun TracksInPlaylistScreen(
 @Composable
 fun TrackListItemIn(
     track: Track,
-    onClick: () -> Unit
+    onClick: (Long) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onClick()
+                onClick(track.trackId)
                 Log.d("TrackListItemIn", "Track clicked: $track")
             }
             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -147,7 +151,7 @@ fun TrackListItemIn(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "${track.artistName} • ${track.trackTime}", // Время можно отформатировать позже
+                text = "${track.artistName} • ${track.trackTime}",
                 fontSize = 12.sp,
                 color = Color.Gray,
                 maxLines = 1,

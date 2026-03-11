@@ -1,7 +1,10 @@
 package com.solyakov.playlist
 
+import com.solyakov.playlist.data.database.PlaylistEntity
+import com.solyakov.playlist.data.database.TrackEntity
 import com.solyakov.playlist.data.dto.TrackDto
 import com.solyakov.playlist.data.network.Track
+import com.solyakov.playlist.data.playlist.Playlist
 
 fun TrackDto.toTrackModel(): Track {
     val seconds = trackTimeMillis / 1000
@@ -12,8 +15,48 @@ fun TrackDto.toTrackModel(): Track {
         trackName = trackName,
         artistName = artistName,
         trackTime = trackTime,
-        playlistId = null,
-        image = artworkUrl100?.replace("100x100", "512x512")
+        image = artworkUrl100?.replace("100x100", "512x512") ?: ""
     )
 }
 
+
+
+fun TrackEntity.toTrack(): Track{
+    return Track(
+        trackId = this.trackId,
+        trackName = this.trackName,
+        artistName = this.artistName,
+        trackTime = this.trackTime,
+        favorite = this.favorite,
+        image = this.image
+    )
+}
+
+fun Track.toEntity(): TrackEntity {
+    return TrackEntity(
+        trackId = this.trackId,
+        trackName = this.trackName,
+        artistName = this.artistName,
+        trackTime = this.trackTime,
+        image = this.image,
+        favorite = this.favorite
+    )
+}
+
+fun Playlist.toPlaylistEntity(): PlaylistEntity {
+    return PlaylistEntity(
+        playlistId = this.playlistId,
+        name = this.name,
+        description = this.description,
+        image = this.image
+    )
+}
+
+fun PlaylistEntity.toPlaylist(): Playlist {
+    return Playlist(
+        playlistId = this.playlistId,
+        name = this.name,
+        description = this.description,
+        image = this.image
+    )
+}

@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddToPhotos
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -177,6 +180,8 @@ fun TrackScreen(
                     fontSize = 14.sp
                 )
 
+                Spacer(Modifier.height(54.dp))
+
                 Row(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -189,10 +194,12 @@ fun TrackScreen(
                         content = {
                             Icon(
                                 imageVector = Icons.Default.AddToPhotos,
-                                contentDescription = "Add to favorites"
+                                contentDescription = "Add to favorites",
+                                tint = Color.White
                             )
                         },
-                        shape = CircleShape
+                        shape = CircleShape,
+                        containerColor = Color.LightGray
                     )
 
                     FloatingActionButton(
@@ -201,11 +208,13 @@ fun TrackScreen(
                         },
                         content = {
                             Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
-                                contentDescription = "Add to favorites"
+                                imageVector = if (track.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Add to favorites",
+                                tint = Color.White
                             )
                         },
-                        shape = CircleShape
+                        shape = CircleShape,
+                        containerColor = Color.LightGray
                     )
                 }
             }
@@ -245,7 +254,7 @@ fun PlaylistsSheet(
                         PlaylistItem(
                             playlist = playlists[it],
                             onClick = {
-                                addTrackToPlaylist(track, playlists[it].id)
+                                addTrackToPlaylist(track, playlists[it].playlistId)
                             }
                         )
                     }
@@ -281,9 +290,6 @@ fun PlaylistItem(
         Column {
             Text(
                 text = playlist.name
-            )
-            Text(
-                text = "${playlist.tracks.size} Треков"
             )
         }
     }

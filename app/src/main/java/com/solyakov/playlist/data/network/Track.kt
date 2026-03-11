@@ -6,7 +6,6 @@ data class Track(
     val trackName: String,
     val artistName: String,
     val trackTime: String,
-    val playlistId: Long?,
     var favorite: Boolean = false,
-    val image: String?
+    val image: String
 )

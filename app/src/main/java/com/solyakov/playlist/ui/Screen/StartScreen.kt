@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
@@ -43,7 +44,8 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onPlaylistsClick: () -> Unit
+    onPlaylistsClick: () -> Unit,
+    onFavoriteScreenClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +70,8 @@ fun MainScreen(
             ScreenContent(
                 onSearchClick = {onSearchClick()},
                 onSettingsClick = {onSettingsClick()},
-                onPlaylistsClick = { onPlaylistsClick() }
+                onPlaylistsClick = { onPlaylistsClick() },
+                onFavoriteScreenClick = { onFavoriteScreenClick() }
             )
     }
 }
@@ -77,7 +80,8 @@ fun MainScreen(
 fun ScreenContent(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onPlaylistsClick: () -> Unit
+    onPlaylistsClick: () -> Unit,
+    onFavoriteScreenClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -108,7 +112,9 @@ fun ScreenContent(
             Element(
                 screenIcon = Icons.Default.FavoriteBorder,
                 text = stringResource(R.string.favourites),
-                onClick = { }
+                onClick = {
+                    onFavoriteScreenClick()
+                }
             )
 
             Element(
@@ -175,7 +181,7 @@ private fun ElementContent(icon: @Composable () -> Unit, text: String) {
             )
         }
         Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = stringResource(R.string.back),
             tint = Color.Gray
         )

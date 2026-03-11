@@ -1,7 +1,11 @@
 package com.solyakov.playlist.data.playlist
 
+import com.solyakov.playlist.data.database.AppDatabase
+import com.solyakov.playlist.data.database.PlaylistEntity
 import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
+import com.solyakov.playlist.toPlaylist
+import com.solyakov.playlist.toTrack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,92 +14,50 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PlaylistsRepositoryImpl(): PlaylistsRepository {
-    private val _playlists = MutableStateFlow<List<Playlist>>(emptyList())
+class PlaylistsRepositoryImpl(
+    database: AppDatabase
+): PlaylistsRepository {
+    private val playlistsDao = database.PlaylistsDao()
+    private val linkDao = database.TableLinkDao()
 
-    private val favoriteTracks = MutableStateFlow<List<Track>>(emptyList())
 
 
     override fun getAllPlaylists(): Flow<List<Playlist>> {
-        return _playlists.asStateFlow()
+        return playlistsDao.getAllPlaylists().map {
+            it.map {
+                it.toPlaylist()
+            }
+        }
     }
 
-    override fun addPlaylist(name: String, description: String) {
-        _playlists.update { currentList ->
-            val newPlaylist = Playlist(
-                id = _playlists.value.size.toLong() + 1,
-                name = name,
-                description = description,
-                tracks = emptyList(),
-                image = null
-            )
-            currentList + newPlaylist
-        }
+    override suspend fun addPlaylist(name: String, description: String, image: String?) {
+        val playlist = PlaylistEntity(
+            name = name,
+            description = description,
+            image = image
+        )
+     playlistsDao.addPlaylist(playlist)
     }
 
     override suspend fun deletePlaylist(playlistId: Long) {
-        _playlists.update { currentList ->
-            currentList.filter { it.id != playlistId }
-            }
-    }
-
-    override suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long) {
-        _playlists.update {currentList ->
-            val oldPlaylist = _playlists.value.find { it.id == playlistId } ?: return
-            val updatedTracks = oldPlaylist.tracks.filter { it.trackId != trackId }
-            val updatedPlaylist = oldPlaylist.copy(tracks = updatedTracks)
-            currentList.map {playlist ->
-                if (playlist.id == playlistId) updatedPlaylist else playlist
-            }
-        }
-    }
-
-    override fun getPlaylist(id: Long): Flow<Playlist?> {
-        return _playlists.asStateFlow().map { playlistList ->
-            playlistList.find { it.id == id}
-        }
-    }
-
-    override fun getFavoriteTracks(): Flow<List<Track>> {
-        return favoriteTracks.asStateFlow()
+        playlistsDao.deletePlaylist(playlistId)
     }
 
 
-
-    override suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) {
-        _playlists.update {
-            val targetPlaylist = _playlists.value.find { it.id == playlistId  } ?: return
-            if (targetPlaylist.tracks.contains(track)) return
-            val updatedTracks = targetPlaylist.tracks + track
-            val updatedPlaylist = targetPlaylist.copy(tracks = updatedTracks)
-            val newList = _playlists.value.map {
-                if (it.id == targetPlaylist.id) updatedPlaylist else it
-            }
-            newList
-        }
-
+    override suspend fun getPlaylist(id: Long): Playlist {
+        return playlistsDao.getPlaylist(id).toPlaylist()
     }
 
-    override suspend fun toggleFavorite(track: Track) {
-        if (track.favorite) favoriteTracks.value = favoriteTracks.value - track
-        else favoriteTracks.update {
-            it + track
-        }
-        track.favorite = !track.favorite
+
+    override fun getAllTrackInPlaylist(playlistId: Long): Flow<List<Track>> {
+       return linkDao.getTracksForPlaylist(playlistId).map {
+           it.map {
+               it.toTrack()
+           }
+       }
     }
 
-    override suspend fun deletePlaylistById(id: Long) {
-        _playlists.update { currentList ->
-            currentList.filter { it.id != id }
-        }
-    }
-
-    override suspend fun getAllTrackInPlaylist(playlistId: Long): List<Track> {
-        val targetPlaylist = _playlists.value.forEach { playlist ->
-            if (playlist.id == playlistId) {
-                return playlist.tracks
-            }
-        }
-        return emptyList()
+    override fun getCountTracksInPlaylist(playlistId: Long): Flow<Int> {
+        return linkDao.getTracksCount(playlistId)
     }
 }

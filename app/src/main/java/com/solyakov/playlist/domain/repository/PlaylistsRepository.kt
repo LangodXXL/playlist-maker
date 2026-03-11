@@ -8,23 +8,14 @@ interface PlaylistsRepository {
 
     fun getAllPlaylists(): Flow<List<Playlist>>
 
-    fun addPlaylist(name: String, description: String)
+    suspend fun addPlaylist(name: String, description: String, image: String?)
 
     suspend fun deletePlaylist(playlistId: Long)
 
-    suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long)
+    suspend fun getPlaylist(id: Long): Playlist
 
-    fun getPlaylist(id: Long): Flow<Playlist?>
-
-    fun getFavoriteTracks(): Flow<List<Track>>
-
-    suspend fun insertTrackToPlaylist(track: Track, playlistId: Long)
-
-    suspend fun toggleFavorite(track: Track)
-
-    suspend fun deletePlaylistById(id: Long)
-
-    suspend fun getAllTrackInPlaylist(playlistId: Long): List<Track>
+    fun getCountTracksInPlaylist(playlistId: Long): Flow<Int>
+    fun getAllTrackInPlaylist(playlistId: Long): Flow<List<Track>>
 }
 
 

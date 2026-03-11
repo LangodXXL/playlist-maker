@@ -63,8 +63,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.solyakov.playlist.R
 import com.solyakov.playlist.data.network.Track
-import com.solyakov.playlist.ui.view_model.SearchState
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
+import com.solyakov.playlist.ui.view_model.SearchState
 
 
 @Composable
