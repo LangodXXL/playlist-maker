@@ -1,15 +1,18 @@
 package com.solyakov.playlist.data.di
 
 
+import android.content.ComponentName
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.media3.session.SessionToken
 import androidx.room.Room
 import com.solyakov.playlist.data.database.AppDatabase
 import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
 import com.solyakov.playlist.data.network.ITunesApiService
 import com.solyakov.playlist.data.network.RetrofitNetworkClient
 import com.solyakov.playlist.data.network.TracksRepositoryImpl
+import com.solyakov.playlist.data.playlist.AudioPlayerService
 import com.solyakov.playlist.data.playlist.ImageSaver
 import com.solyakov.playlist.data.playlist.PlaylistsRepositoryImpl
 import com.solyakov.playlist.domain.api.NetworkClient
@@ -83,6 +86,8 @@ val dataModule = module {
 
     single {
         ImageSaver(get())
-
+    }
+    single {
+        SessionToken(get(), ComponentName(get(), AudioPlayerService::class.java))
     }
 }

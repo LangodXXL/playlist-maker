@@ -2,6 +2,7 @@
 
 package com.solyakov.playlist.ui.Screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,13 +25,18 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddToPhotos
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -44,7 +50,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,6 +68,9 @@ import com.solyakov.playlist.ui.view_model.TrackScreenState
 import com.solyakov.playlist.ui.view_model.TrackViewModel
 import com.valentinilk.shimmer.shimmer
 
+
+
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackScreen(
@@ -75,6 +86,18 @@ fun TrackScreen(
         skipPartiallyExpanded = true
     )
     val playlists by viewModel.getAllPlaylists().collectAsState(emptyList())
+
+    val currentPositionInTrack by viewModel.currentPosition
+    val isPlaying by viewModel.isPlaying
+    val durationInTrack by viewModel.duration
+
+    var isDragging by remember { mutableStateOf(false) } // для ползунка
+    var sliderPosition by remember { mutableStateOf(0f) }
+    LaunchedEffect(currentPositionInTrack) {
+        if (!isDragging) {
+            sliderPosition = currentPositionInTrack
+        }
+    }
 
 
     when (trackScreenState) {
@@ -180,7 +203,117 @@ fun TrackScreen(
                     fontSize = 14.sp
                 )
 
-                Spacer(Modifier.height(54.dp))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Slider(
+                        value = sliderPosition,
+                        onValueChange = {
+                            isDragging = true
+                            sliderPosition = it
+                        },
+                        onValueChangeFinished = {
+                            viewModel.seekTo(sliderPosition)
+                            isDragging = false
+                                                },
+                        valueRange = 0f..durationInTrack,
+                        modifier = Modifier.fillMaxWidth(),
+                        thumb = {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .background(Color.Blue, CircleShape)
+                                    .shadow(elevation = 2.dp, shape = CircleShape),
+                            )
+
+                        },
+                        track = { sliderState ->
+                            SliderDefaults.Track(
+                                sliderState = sliderState,
+                                modifier = Modifier.height(4.dp),
+                                thumbTrackGapSize = 0.dp,
+                                trackInsideCornerSize = 2.dp,
+                                colors = SliderDefaults.colors(
+                                    activeTrackColor = Color.Blue,
+                                    inactiveTrackColor = Color.Gray.copy(alpha = 0.3f)
+                                )
+                            )
+                        }
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val currentMinutes = (sliderPosition.toLong() / 1000) / 60
+                        val currentSeconds = (sliderPosition.toLong() / 1000) % 60
+                        val currentTimeString = String.format("%d:%02d", currentMinutes, currentSeconds)
+
+                        val totalMinutes = (durationInTrack.toLong() / 1000) / 60
+                        val totalSeconds = (durationInTrack.toLong() / 1000) % 60
+                        val totalTimeString = String.format("%d:%02d", totalMinutes, totalSeconds)
+
+                        Text(text = currentTimeString, fontSize = 12.sp, color = Color.Gray)
+                        Text(text = totalTimeString, fontSize = 12.sp, color = Color.Gray)
+
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { viewModel.playPrevious() },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = android.R.drawable.ic_media_previous),
+                                contentDescription = "Previous",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.size(24.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .clickable { viewModel.playTrack(track) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = if (!isPlaying) Icons.Default.PlayArrow else Icons.Default.Pause,
+                                contentDescription = "Play",
+                                tint = Color.Black,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.size(24.dp))
+
+                        IconButton(
+                            onClick = { viewModel.playNext() },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = android.R.drawable.ic_media_next),
+                                contentDescription = "Next",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(30.dp))
 
                 Row(
                     modifier = Modifier

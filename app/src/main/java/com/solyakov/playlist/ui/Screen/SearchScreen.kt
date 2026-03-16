@@ -243,7 +243,10 @@ fun SearchScreen(onClick: () -> Unit,
                                 items(tracks.size) { index ->
                                     TrackListItem(
                                         track = tracks[index],
-                                        onClick = { onTrackClick(tracks[index].trackId) }
+                                        onClick = {
+                                            viewModel.onTrackClick(tracks, index)
+                                            onTrackClick(tracks[index].trackId)
+                                        }
 
                                     )
                                     HorizontalDivider(thickness = 0.5.dp)

@@ -6,19 +6,20 @@ import com.solyakov.playlist.ui.view_model.PlaylistsViewModel
 import com.solyakov.playlist.ui.view_model.SearchScreenViewModel
 import com.solyakov.playlist.ui.view_model.TracksInPlaylistViewModel
 import com.solyakov.playlist.ui.view_model.TrackViewModel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
 
     viewModel {
-        SearchScreenViewModel(get(), get())
+        SearchScreenViewModel(get(), get(), get(), get())
     }
     viewModel {
         PlaylistsViewModel(get())
     }
     viewModel {
-        TrackViewModel(get(), get())
+        TrackViewModel(androidApplication(), get(), get(), get())
     }
     viewModel {
         AddPlaylistScreenViewModel(get(), get())

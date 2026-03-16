@@ -13,5 +13,6 @@ data class TrackEntity(
     val artistName: String,
     val trackTime: String,
     val image: String,
-    val favorite: Boolean = false
+    val favorite: Boolean = false,
+    val previewUrl: String
 ) 

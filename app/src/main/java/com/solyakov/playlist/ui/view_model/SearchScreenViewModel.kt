@@ -1,10 +1,15 @@
 package com.solyakov.playlist.ui.view_model
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.MoreExecutors
 import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
 import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.domain.repository.TracksRepository
+import com.solyakov.playlist.toMediaItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,13 +30,25 @@ sealed class SearchState {
 
 class SearchScreenViewModel(
     private val tracksRepository: TracksRepository,
-    val historyRepository: SearchHistoryRepositoryImpl
+    val historyRepository: SearchHistoryRepositoryImpl,
+    context: Context,
+    sessionToken: SessionToken
 ) : ViewModel() {
+
+
+    private var controller: MediaController? = null
+
+    init {
+        val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+        controllerFuture.addListener({
+            controller = controllerFuture.get()
+        },
+            MoreExecutors.directExecutor())
+    }
 
     private val _searchScreenState = MutableStateFlow<SearchState>(SearchState.Initial)
     val searchScreenState  = _searchScreenState.asStateFlow()
     private var searchJob: Job? = null
-
 
     fun search(whatSearch: String) {
         searchJob?.cancel()
@@ -61,6 +78,19 @@ class SearchScreenViewModel(
         }
     }
 
+    fun onTrackClick(tracks: List<Track>, startIndex: Int) {
+        val controller = controller ?: return
+        val mediaItems = tracks.map { it.toMediaItem() }
+
+        controller.setMediaItems(mediaItems, startIndex, 0L)
+        controller.prepare()
+    }
+    override fun onCleared() {
+        super.onCleared()
+        controller?.release()
+        controller = null
+    }
+
     fun clearQuery() {
         searchJob?.cancel()
         _searchScreenState.update { SearchState.Initial }
@@ -76,4 +106,5 @@ class SearchScreenViewModel(
         }
 
     }
+
 }

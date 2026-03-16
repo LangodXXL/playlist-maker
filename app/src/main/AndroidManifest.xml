@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- ДОБАВЬ ЭТИ ДВЕ СТРОКИ -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -13,6 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Playlist">
+        <service android:name=".data.playlist.AudioPlayerService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+    </service>
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"
