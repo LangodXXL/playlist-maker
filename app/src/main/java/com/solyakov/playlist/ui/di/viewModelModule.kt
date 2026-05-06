@@ -13,7 +13,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
     viewModel {
-        SearchScreenViewModel(get(), get(), get(), get())
+        SearchScreenViewModel(get(), get(), androidApplication(), get())
     }
     viewModel {
         PlaylistsViewModel(get())
@@ -25,10 +25,10 @@ val viewModelModule = module {
         AddPlaylistScreenViewModel(get(), get())
     }
     viewModel {
-        TracksInPlaylistViewModel(get())
+        TracksInPlaylistViewModel(get(), androidApplication(), get())
     }
     viewModel {
-        FavoriteTracksViewModel(get())
+        FavoriteTracksViewModel(get(), get(), androidApplication())
     }
 
 }

@@ -287,7 +287,7 @@ fun TrackScreen(
                                 .size(72.dp)
                                 .clip(CircleShape)
                                 .background(Color.White)
-                                .clickable { viewModel.playTrack(track) },
+                                .clickable { viewModel.playTrack() },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(

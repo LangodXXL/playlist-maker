@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -73,13 +74,14 @@ fun FavoriteTracksScreen(
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
-            items(
+            itemsIndexed(
                 items = tracks,
-                key = { track -> track.trackId }
-            ) { track ->
+                key = { _, track -> track.trackId },
+            ) { index, track ->
                 TrackListItemIn(
                     track = track,
                     onClick = {
+                        viewModel.onTrackClick(tracks, index)
                         onTrackClick(it)
                     },
                     onLongTrackClick = {viewModel.toggleFavorite(track)}
@@ -101,8 +103,10 @@ fun TrackListItemIn(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = {onClick(track.trackId)},
-                onLongClick = {onLongTrackClick(track)}
+                onClick = {
+                    onClick(track.trackId)},
+                onLongClick = {onLongTrackClick(track)
+                }
             )
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically

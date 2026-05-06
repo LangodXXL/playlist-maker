@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -98,13 +99,16 @@ fun TracksInPlaylistScreen(
                     .padding(innerPadding),
                 contentPadding = PaddingValues(bottom = 16.dp)
             ) {
-                items(
+                itemsIndexed(
                     items = tracks,
-                    key = { track -> track.trackId }
-                ) { track ->
+                    key = { index, track -> track.trackId }
+                ) {index,  track ->
                     TrackListItemIn(
                         track = track,
-                        onClick = { onTrackClick(track.trackId) }
+                        onClick = {
+                            viewModel.onTrackClick(tracks, index)
+                            onTrackClick(track.trackId)
+                        }
                     )
                 }
             }

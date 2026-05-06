@@ -58,6 +58,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
@@ -277,13 +278,13 @@ fun SearchScreen(onClick: () -> Unit,
 @Composable
 fun TrackListItem(
     track: Track,
-    onClick: (Long) -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onClick(track.trackId)
+                onClick()
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -314,19 +315,31 @@ fun TrackListItem(
         ) {
             Text(
                 text = track.trackName,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
                 )
-            Row{
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ){
                 Text(
-                    text = track.artistName + "  -",
+                    text = track.artistName + "  •",
                     fontSize = 13.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = track.trackTime,
                     fontSize = 13.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(end = 8.dp)
                 )
             }
         }

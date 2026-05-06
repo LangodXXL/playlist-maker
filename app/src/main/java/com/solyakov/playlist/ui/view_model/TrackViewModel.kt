@@ -88,7 +88,7 @@ class TrackViewModel(
         timerJob?.cancel()
     }
 
-    fun playTrack(track: Track) {
+    fun playTrack() {
         val ctrl = controller ?: return
         if (ctrl.isPlaying) {
             ctrl.pause()
@@ -98,6 +98,7 @@ class TrackViewModel(
     }
 
     fun playNext() {
+        controller?.isPlaying?.let { if (!it) controller?.pause() }
         controller?.seekToNext()
     }
 

@@ -19,7 +19,7 @@ fun TrackDto.toTrackModel(): Track {
         artistName = artistName,
         trackTime = trackTime,
         image = artworkUrl100?.replace("100x100", "512x512") ?: "",
-        previewUrl = previewUrl
+        previewUrl = previewUrl ?: ""
     )
 }
 
