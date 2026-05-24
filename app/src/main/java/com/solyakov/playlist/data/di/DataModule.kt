@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.media3.session.SessionToken
 import androidx.room.Room
 import com.solyakov.playlist.data.database.AppDatabase
+import com.solyakov.playlist.data.database.SettingsRepository
 import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
 import com.solyakov.playlist.data.network.ITunesApiService
 import com.solyakov.playlist.data.network.RetrofitNetworkClient
@@ -23,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -37,6 +39,7 @@ val dataModule = module {
     single<TracksRepository> {
         TracksRepositoryImpl(get(), get())
     }
+    single { SettingsRepository(androidContext()) }
 
     single<ITunesApiService> {
         get<Retrofit>().create(ITunesApiService::class.java)

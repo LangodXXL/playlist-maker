@@ -5,6 +5,7 @@ package com.solyakov.playlist.ui.Screen
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,12 +34,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -102,7 +105,10 @@ fun TrackScreen(
 
     when (trackScreenState) {
         is TrackScreenState.Error -> {
-            Text(text = "Error: ${(trackScreenState as TrackScreenState.Error).message}")
+            Text(
+                text = "Error: ${(trackScreenState as TrackScreenState.Error).message}",
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
 
         is TrackScreenState.Loading -> {
@@ -138,6 +144,7 @@ fun TrackScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary)
                     .padding(horizontal = 24.dp)
             ) {
                 TopAppBar(
@@ -150,9 +157,14 @@ fun TrackScreen(
                             contentDescription = "Back",
                             modifier = Modifier.clickable {
                                 onBackClick()
-                            }
+                            },
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                    )
                 )
 
                 Box(
@@ -195,12 +207,14 @@ fun TrackScreen(
                 }
                 Text(
                     text = track.trackName,
-                    fontSize = 22.sp
+                    fontSize = 22.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
                     text = track.artistName,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
 
@@ -226,7 +240,7 @@ fun TrackScreen(
                             Box(
                                 modifier = Modifier
                                     .size(12.dp)
-                                    .background(Color.Blue, CircleShape)
+                                    .background(MaterialTheme.colorScheme.onSurface, CircleShape)
                                     .shadow(elevation = 2.dp, shape = CircleShape),
                             )
 
@@ -257,8 +271,16 @@ fun TrackScreen(
                         val totalSeconds = (durationInTrack.toLong() / 1000) % 60
                         val totalTimeString = String.format("%d:%02d", totalMinutes, totalSeconds)
 
-                        Text(text = currentTimeString, fontSize = 12.sp, color = Color.Gray)
-                        Text(text = totalTimeString, fontSize = 12.sp, color = Color.Gray)
+                        Text(
+                            text = currentTimeString,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = totalTimeString,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
 
                     }
 
@@ -269,14 +291,20 @@ fun TrackScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = { viewModel.playPrevious() },
-                            modifier = Modifier.size(48.dp)
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)) // Легкий фон
+                                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), CircleShape) // Тонкая обводка
+                                .clickable { viewModel.playPrevious() },
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 painter = painterResource(id = android.R.drawable.ic_media_previous),
                                 contentDescription = "Previous",
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(32.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
@@ -284,30 +312,38 @@ fun TrackScreen(
 
                         Box(
                             modifier = Modifier
-                                .size(72.dp)
+                                .size(76.dp)
+                                .shadow(elevation = 8.dp, shape = CircleShape)
                                 .clip(CircleShape)
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), CircleShape)
                                 .clickable { viewModel.playTrack() },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = if (!isPlaying) Icons.Default.PlayArrow else Icons.Default.Pause,
                                 contentDescription = "Play",
-                                tint = Color.Black,
+                                tint = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.size(40.dp)
                             )
                         }
 
                         Spacer(modifier = Modifier.size(24.dp))
 
-                        IconButton(
-                            onClick = { viewModel.playNext() },
-                            modifier = Modifier.size(48.dp)
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f))
+                                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), CircleShape)
+                                .clickable { viewModel.playNext() },
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 painter = painterResource(id = android.R.drawable.ic_media_next),
                                 contentDescription = "Next",
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(32.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }

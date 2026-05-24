@@ -15,12 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -87,7 +87,7 @@ fun ScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
     ) {
         Column(
@@ -140,7 +140,7 @@ fun Element(screenIcon: ImageVector, text: String, onClick: () -> Unit) {
         shape = RoundedCornerShape(0.dp)
     ) {
         ElementContent(
-            icon = { Icon(imageVector = screenIcon, contentDescription = null, tint = Color.Black) },
+            icon = { Icon(imageVector = screenIcon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface) },
             text = text
         )
     }
@@ -155,7 +155,7 @@ fun Element(painterIcon: Painter, text: String, onClick: () -> Unit) {
         shape = RoundedCornerShape(0.dp)
     ) {
         ElementContent(
-            icon = { Icon(painter = painterIcon, contentDescription = null, tint = Color.Black) },
+            icon = { Icon(painter = painterIcon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface) },
             text = text
         )
     }
@@ -177,13 +177,13 @@ private fun ElementContent(icon: @Composable () -> Unit, text: String) {
                 text = text,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = stringResource(R.string.back),
-            tint = Color.Gray
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
