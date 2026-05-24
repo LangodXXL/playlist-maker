@@ -70,7 +70,8 @@ fun PlaylistEntity.toPlaylist(): Playlist {
 fun Track.toMediaItem(): MediaItem {
     val metadata = MediaMetadata.Builder()
         .setTitle(this.trackName)
-        .setArtist(this.artistName)        .setArtworkUri(this.image.toUri())
+        .setArtist(this.artistName)
+        .setArtworkUri(this.image.toUri())
         .build()
 
     return MediaItem.Builder()

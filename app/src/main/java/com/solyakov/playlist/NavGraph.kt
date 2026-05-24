@@ -47,7 +47,9 @@ sealed class ScreenRoute(val route: String) {
 }
 
 class PlaylistHost(
-    private val navController: NavHostController
+    private val navController: NavHostController,
+    private val isDarkTheme: Boolean,
+    private val onThemeChanged: (Boolean) -> Unit
 ) {
     private fun navigateToSearch() {
         navController.navigate(ScreenRoute.Search.route)
@@ -107,7 +109,11 @@ class PlaylistHost(
                     )
             }
             composable(ScreenRoute.Settings.route) {
-                SettingsScreen(onClick = { navigateBack() })
+                SettingsScreen(
+                    onClick = { navigateBack() },
+                    isDarkTheme = isDarkTheme,
+                    onThemeChanged = { onThemeChanged(it) }
+                )
             }
             composable(ScreenRoute.Playlists.route) {
                 val playlistsViewModel: PlaylistsViewModel = koinViewModel()

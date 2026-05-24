@@ -90,7 +90,7 @@ fun SearchScreen(onClick: () -> Unit,
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -106,7 +106,7 @@ fun SearchScreen(onClick: () -> Unit,
                     modifier = Modifier.padding(start = 16.dp),
                     text = stringResource(R.string.search),
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             navigationIcon = {
@@ -119,7 +119,7 @@ fun SearchScreen(onClick: () -> Unit,
                         },
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         )
@@ -143,7 +143,14 @@ fun SearchScreen(onClick: () -> Unit,
                     imeAction = ImeAction.Search
                 ),
                 value = inputText,
-                placeholder = { Text(text = stringResource(R.string.search)) },
+                placeholder = {
+                    Text(
+                        modifier = Modifier.alpha(0.4f),
+                        text = stringResource(R.string.search),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+
+                        )
+                              },
                 onValueChange = {
                     inputText = it
                     viewModel.search(it.text)
@@ -157,7 +164,8 @@ fun SearchScreen(onClick: () -> Unit,
                                 viewModel.clearQuery()
                             },
                             imageVector = Icons.Default.Clear,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.surfaceContainerHigh
                         )
                     }
                 },
@@ -167,21 +175,22 @@ fun SearchScreen(onClick: () -> Unit,
                             viewModel.search(inputText.text)
                         },
                         imageVector = Icons.Default.Search,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.surfaceContainerHigh
                     )
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFFE6E8EB),
-                    unfocusedContainerColor = Color(0xFFE6E8EB),
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
 
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
+                    focusedTextColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    unfocusedTextColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedLeadingIconColor = Color.Black,
-                    unfocusedLeadingIconColor = Color.Black,
-                    focusedTrailingIconColor = Color.Black,
-                    unfocusedTrailingIconColor = Color.Black
+                    focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 shape = textFieldShape
             )
@@ -192,7 +201,6 @@ fun SearchScreen(onClick: () -> Unit,
                         inputText = TextFieldValue(
                             text = it,
                             selection = TextRange(historyRequests.size)
-
                         )
                         viewModel.search(it)
                     }
@@ -209,7 +217,10 @@ fun SearchScreen(onClick: () -> Unit,
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Введите строку для поиска")
+                            Text(
+                                text = "Введите строку для поиска",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
 
@@ -233,7 +244,10 @@ fun SearchScreen(onClick: () -> Unit,
                                     .padding(start = 16.dp, end = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text("Ничего не нашлось")
+                                Text(
+                                    text = "Ничего не нашлось",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         } else {
                             LazyColumn(
@@ -265,7 +279,10 @@ fun SearchScreen(onClick: () -> Unit,
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Ошибка: $error", color = Color.Red)
+                            Text(
+                                text = "Ошибка: $error",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
@@ -317,7 +334,8 @@ fun TrackListItem(
                 text = track.trackName,
                 fontSize = 16.sp,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -327,7 +345,7 @@ fun TrackListItem(
                 Text(
                     text = track.artistName + "  •",
                     fontSize = 13.sp,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false)
@@ -336,7 +354,7 @@ fun TrackListItem(
                 Text(
                     text = track.trackTime,
                     fontSize = 13.sp,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(end = 8.dp)
@@ -345,7 +363,8 @@ fun TrackListItem(
         }
         Image(
             painter = painterResource(R.drawable.arrow),
-            contentDescription = null
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
         )
     }
 }
@@ -366,19 +385,19 @@ fun HistoryItem(
         Icon(
             imageVector = Icons.Default.AccessTime,
             contentDescription = "Search history item",
-            tint = Color.Black
+            tint = MaterialTheme.colorScheme.onTertiaryContainer
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = query,
             fontSize = 16.sp,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
             modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = "Go to query",
-            tint = Color.Gray
+            tint = MaterialTheme.colorScheme.onTertiaryContainer
         )
     }
 }
