@@ -27,4 +27,6 @@ interface TableLinkDao {
     @Query("SELECT COUNT(*) FROM table_link WHERE playlistId = :playlistId")
     fun getTracksCount(playlistId: Long): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM table_link WHERE trackId = :trackId")
+    suspend fun getTrackUsageCount(trackId: Long): Int
 }

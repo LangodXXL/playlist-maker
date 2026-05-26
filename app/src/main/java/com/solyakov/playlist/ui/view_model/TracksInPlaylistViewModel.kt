@@ -11,18 +11,17 @@ import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
 import com.solyakov.playlist.toMediaItem
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TracksInPlaylistViewModel(
     private val playlistsRepository: PlaylistsRepository,
+    private val tracksRepository: TracksRepository,
     context: Context,
     sessionToken: SessionToken
 ): ViewModel() {
@@ -62,6 +61,11 @@ class TracksInPlaylistViewModel(
         initialValue = 0
     )
 
+    fun deleteTrack(track: Track, playlistId: Long) {
+        viewModelScope.launch {
+            tracksRepository.deleteTrackFromPlaylist(track.trackId, playlistId)
+        }
+    }
 
     fun getAllTracksInPlaylist(playlistId: Long) {
         viewModelScope.launch {

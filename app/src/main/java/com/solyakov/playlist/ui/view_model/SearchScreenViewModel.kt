@@ -37,7 +37,8 @@ class SearchScreenViewModel(
 
 
     private var controller: MediaController? = null
-
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
     init {
         val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         controllerFuture.addListener({
@@ -51,6 +52,7 @@ class SearchScreenViewModel(
     private var searchJob: Job? = null
 
     fun search(whatSearch: String) {
+        _searchText.value = whatSearch
         searchJob?.cancel()
         if (whatSearch.isBlank()) {
             _searchScreenState.update { SearchState.Initial }
@@ -63,7 +65,7 @@ class SearchScreenViewModel(
         }
 
     }
-    private suspend fun executeSearch (whatSearch: String) {
+    private suspend fun executeSearch(whatSearch: String) {
         try {
             if (coroutineContext.isActive) {
                 _searchScreenState.update { SearchState.Searching }
@@ -72,9 +74,12 @@ class SearchScreenViewModel(
             }
         } catch (e: IOException) {
             if (coroutineContext.isActive) {
-                _searchScreenState.update { SearchState.Fail(e.message.toString()) }
+                _searchScreenState.update { SearchState.Fail("network_error") }
             }
-
+        } catch (e: Exception) {
+            if (coroutineContext.isActive) {
+                _searchScreenState.update { SearchState.Fail("server_error") }
+            }
         }
     }
 
@@ -92,6 +97,7 @@ class SearchScreenViewModel(
     }
 
     fun clearQuery() {
+        _searchText.value = ""
         searchJob?.cancel()
         _searchScreenState.update { SearchState.Initial }
     }

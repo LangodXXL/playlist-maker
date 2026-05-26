@@ -5,6 +5,7 @@ import com.solyakov.playlist.data.dto.TrackSearchByIdRequest
 import com.solyakov.playlist.domain.api.NetworkClient
 import com.solyakov.playlist.data.dto.TracksSearchRequest
 import java.io.IOException
+import kotlin.coroutines.cancellation.CancellationException
 
 class RetrofitNetworkClient(private val api: ITunesApiService) : NetworkClient {
 
@@ -30,6 +31,7 @@ class RetrofitNetworkClient(private val api: ITunesApiService) : NetworkClient {
         catch (e: IOException) {
             BaseResponse().apply { resultCode = -1 }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             BaseResponse().apply { resultCode = -2 }
         }
     }

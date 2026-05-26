@@ -14,6 +14,7 @@ import com.solyakov.playlist.toTrack
 import com.solyakov.playlist.toTrackModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -25,12 +26,19 @@ class TracksRepositoryImpl(
 
     override suspend fun searchTracks(expression: String): List<Track> {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
-        return if (response.resultCode == 200) {
-            (response as TracksSearchResponse).results.map {
-                it.toTrackModel()
+
+        return when (response.resultCode) {
+            200 -> {
+                (response as TracksSearchResponse).results.map {
+                    it.toTrackModel()
+                }
             }
-        } else {
-            emptyList()
+            -1 -> {
+                throw IOException("No internet connection")
+            }
+            else -> {
+                throw Exception("Server error")
+            }
         }
     }
 
@@ -53,12 +61,18 @@ class TracksRepositoryImpl(
         tracksDao.insertTrack(entity)
     }
 
-    override suspend fun deleteTrackFromAllPlaylists(track: Track) {
-        tracksDao.deleteTrackFromAllPlaylist(track.toEntity())
+    override suspend fun deleteTrackFromAllPlaylists(trackId: Long) {
+        tracksDao.deleteTrackFromAllPlaylist(trackId)
     }
 
     override suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long) {
         linkDao.deleteLink(trackId, playlistId)
+
+        val usageCount = linkDao.getTrackUsageCount(trackId)
+        val trackEntity = tracksDao.getTrackById(trackId)
+        if (usageCount == 0 && trackEntity?.favorite == false) {
+            deleteTrackFromAllPlaylists(trackId)
+        }
     }
 
     override suspend fun insertTrackToPlaylist(
@@ -76,5 +90,7 @@ class TracksRepositoryImpl(
             }
         }
     }
+
+
 
 }

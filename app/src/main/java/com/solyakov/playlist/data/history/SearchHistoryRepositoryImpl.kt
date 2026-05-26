@@ -30,7 +30,7 @@ class SearchHistoryRepositoryImpl(
 
     companion object {
         private val HISTORY_KEY = stringPreferencesKey("search_history_json")
-        private const val MAX_HISTORY_SIZE = 4
+        private const val MAX_HISTORY_SIZE = 10
         private val gson = Gson()
         private val listType = object : TypeToken<List<String>>() {}.type
     }

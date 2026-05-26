@@ -25,7 +25,7 @@ val viewModelModule = module {
         AddPlaylistScreenViewModel(get(), get())
     }
     viewModel {
-        TracksInPlaylistViewModel(get(), androidApplication(), get())
+        TracksInPlaylistViewModel(get(), get(),androidApplication(), get())
     }
     viewModel {
         FavoriteTracksViewModel(get(), get(), androidApplication())

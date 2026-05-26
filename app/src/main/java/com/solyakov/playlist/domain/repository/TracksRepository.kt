@@ -8,7 +8,7 @@ interface TracksRepository {
 
     suspend fun getTrackById(trackId: Long): Track
     suspend fun updateTrackFavoriteStatus(track: Track)
-    suspend fun deleteTrackFromAllPlaylists(track: Track)
+    suspend fun deleteTrackFromAllPlaylists(trackId: Long)
 
     suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long)
     suspend fun insertTrackToPlaylist(track: Track, playlistId: Long)

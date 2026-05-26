@@ -17,8 +17,8 @@ interface TracksDao {
     @Query("SELECT * FROM tracks WHERE trackName = :name AND artistName = :artist")
     fun getTrackByNameAndArtist(name: String, artist: String): Flow<TrackEntity?>
 
-    @Delete
-    suspend fun deleteTrackFromAllPlaylist(track: TrackEntity)
+    @Query("DELETE FROM tracks WHERE trackId = :trackId")
+    suspend fun deleteTrackFromAllPlaylist(trackId: Long)
 
     @Query("DELETE FROM table_link WHERE trackId = :trackId AND playlistId = :playlistId")
     suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long)

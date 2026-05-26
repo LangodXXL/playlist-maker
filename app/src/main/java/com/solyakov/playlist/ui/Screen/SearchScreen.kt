@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,7 +26,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -58,6 +62,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,13 +80,12 @@ fun SearchScreen(onClick: () -> Unit,
                  onTrackClick: (Long) -> Unit
 ) {
     val screenState by viewModel.searchScreenState.collectAsState()
-    var inputText by remember { mutableStateOf(TextFieldValue("")) }
+    val inputText by viewModel.searchText.collectAsState()
     val historyRequests by viewModel.historyRepository.getHistory().collectAsState(emptyList())
-    var isFocused by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    val textFieldShape = if (inputText.text.isBlank() && isFocused && historyRequests.isNotEmpty()) {
+    val textFieldShape = if (inputText.isBlank() && historyRequests.isNotEmpty()) {
         RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
     } else {
         RoundedCornerShape(size = 16.dp)
@@ -130,13 +134,11 @@ fun SearchScreen(onClick: () -> Unit,
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        isFocused = it.isFocused
-                    },
+                    ,
                 singleLine = true,
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        viewModel.searchAndAddToHistory(inputText.text)
+                        viewModel.searchAndAddToHistory(inputText)
                     }
                 ),
                 keyboardOptions = KeyboardOptions(
@@ -152,15 +154,13 @@ fun SearchScreen(onClick: () -> Unit,
                         )
                               },
                 onValueChange = {
-                    inputText = it
-                    viewModel.search(it.text)
+                    viewModel.search(it)
 
                 },
                 trailingIcon = {
-                    if (inputText.text.isNotEmpty()) {
+                    if (inputText.isNotEmpty()) {
                         Icon(
                             modifier = Modifier.clickable {
-                                inputText = TextFieldValue("")
                                 viewModel.clearQuery()
                             },
                             imageVector = Icons.Default.Clear,
@@ -172,7 +172,7 @@ fun SearchScreen(onClick: () -> Unit,
                 leadingIcon = {
                     Icon(
                         modifier = Modifier.clickable {
-                            viewModel.search(inputText.text)
+                            viewModel.search(inputText)
                         },
                         imageVector = Icons.Default.Search,
                         contentDescription = null,
@@ -194,14 +194,10 @@ fun SearchScreen(onClick: () -> Unit,
                 ),
                 shape = textFieldShape
             )
-            if (inputText.text.isBlank() && isFocused && historyRequests.isNotEmpty()) {
+            if (inputText.isBlank() && historyRequests.isNotEmpty()) {
                 HistoryContent(
                     historyItems = historyRequests,
                     onHistoryItemClick = {
-                        inputText = TextFieldValue(
-                            text = it,
-                            selection = TextRange(historyRequests.size)
-                        )
                         viewModel.search(it)
                     }
                 )
@@ -272,24 +268,76 @@ fun SearchScreen(onClick: () -> Unit,
                     }
 
                     is SearchState.Fail -> {
-                        val error = (screenState as SearchState.Fail).error
-                        Box(
-                            modifier = modifier
-                                .fillMaxSize()
-                                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Ошибка: $error",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                        SearchPlaceholder(
+                            title = "Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету",
+                            useIcon = true,
+                            showRetryButton = true,
+                            onRetry = { viewModel.search(inputText) }
+                        )
                     }
                 }
             }
         }
 }
 
+
+@Composable
+fun SearchPlaceholder(
+    title: String,
+    imageRes: Int = 0,
+    useIcon: Boolean = false,
+    showRetryButton: Boolean = false,
+    onRetry: () -> Unit = {}
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (useIcon) {
+            Icon(
+                imageVector = Icons.Default.CloudOff,
+                contentDescription = null,
+                modifier = Modifier.size(100.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = null,
+                modifier = Modifier.size(120.dp)
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = title,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 19.sp
+        )
+
+        if (showRetryButton) {
+            Spacer(Modifier.height(24.dp))
+            Button(
+                onClick = onRetry,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onSurface
+                ),
+                shape = RoundedCornerShape(54.dp)
+            ) {
+                Text(
+                    text = "Обновить",
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+        }
+    }
+}
 
 
 @Composable

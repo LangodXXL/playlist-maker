@@ -1,7 +1,9 @@
 package com.solyakov.playlist.ui.Screen
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -108,6 +110,9 @@ fun TracksInPlaylistScreen(
                         onClick = {
                             viewModel.onTrackClick(tracks, index)
                             onTrackClick(track.trackId)
+                        },
+                        onLongClick = {
+                            viewModel.deleteTrack(track, playlistId)
                         }
                     )
                 }
@@ -116,18 +121,20 @@ fun TracksInPlaylistScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TrackListItemIn(
     track: Track,
-    onClick: (Long) -> Unit
+    onClick: (Long) -> Unit,
+    onLongClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                onClick(track.trackId)
-                Log.d("TrackListItemIn", "Track clicked: $track")
-            }
+            .combinedClickable(
+                onClick = { onClick(track.trackId) },
+                onLongClick = onLongClick
+            )
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
