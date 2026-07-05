@@ -18,6 +18,7 @@ import com.solyakov.playlist.data.playlist.ImageSaver
 import com.solyakov.playlist.data.playlist.PlaylistsRepositoryImpl
 import com.solyakov.playlist.domain.api.NetworkClient
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
+import com.solyakov.playlist.domain.repository.SearchHistoryRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,9 +70,8 @@ val dataModule = module {
         PreferenceDataStoreFactory.create(produceFile = { get<Context>().preferencesDataStoreFile("settings_preferences") }
         )
     }
-    single {
+    single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(get())
-
     }
 
     single<PlaylistsRepository> {

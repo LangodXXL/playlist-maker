@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
-import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
 import com.solyakov.playlist.data.network.Track
+import com.solyakov.playlist.domain.repository.SearchHistoryRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
 import com.solyakov.playlist.toMediaItem
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ sealed class SearchState {
 
 class SearchScreenViewModel(
     private val tracksRepository: TracksRepository,
-    val historyRepository: SearchHistoryRepositoryImpl,
+    val historyRepository: SearchHistoryRepository,
     context: Context,
     sessionToken: SessionToken
 ) : ViewModel() {
