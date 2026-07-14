@@ -1,0 +1,106 @@
+package com.solyakov.playlist.data.di
+
+
+import android.content.ComponentName
+import android.content.Context
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.media3.session.SessionToken
+import androidx.room.Room
+import com.solyakov.playlist.data.database.AppDatabase
+import com.solyakov.playlist.data.database.SettingsRepository
+import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
+import com.solyakov.playlist.data.network.ITunesApiService
+import com.solyakov.playlist.data.network.RetrofitNetworkClient
+import com.solyakov.playlist.data.network.TracksRepositoryImpl
+import com.solyakov.playlist.data.player.AudioPlayerService
+import com.solyakov.playlist.data.player.Media3TrackPlayer
+import com.solyakov.playlist.data.playlist.ImageSaver
+import com.solyakov.playlist.data.playlist.PlaylistsRepositoryImpl
+import com.solyakov.playlist.domain.api.NetworkClient
+import com.solyakov.playlist.domain.file.ImageStorage
+import com.solyakov.playlist.domain.player.TrackPlayer
+import com.solyakov.playlist.domain.repository.PlaylistsRepository
+import com.solyakov.playlist.domain.repository.SearchHistoryRepository
+import com.solyakov.playlist.domain.repository.TracksRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+val dataModule = module {
+    factory<NetworkClient> {
+        RetrofitNetworkClient(get())
+    }
+    val baseUrl = "https://itunes.apple.com"
+
+
+    single<TracksRepository> {
+        TracksRepositoryImpl(get(), get())
+    }
+    single { SettingsRepository(androidContext()) }
+
+    single<ITunesApiService> {
+        get<Retrofit>().create(ITunesApiService::class.java)
+    }
+
+    single<Retrofit> {
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(get())
+            .build()
+    }
+
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+    }
+
+    single<CoroutineScope>{
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    }
+
+    single {
+        PreferenceDataStoreFactory.create(produceFile = { get<Context>().preferencesDataStoreFile("settings_preferences") }
+        )
+    }
+    single<SearchHistoryRepository> {
+        SearchHistoryRepositoryImpl(get())
+    }
+
+    single<PlaylistsRepository> {
+        PlaylistsRepositoryImpl(get())
+    }
+
+    single {
+        Room.databaseBuilder(
+            get<Context>(),
+            AppDatabase::class.java,
+            "playlists_maker"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+
+    single {
+        ImageSaver(get())
+    }
+    single {
+        SessionToken(get(), ComponentName(get(), AudioPlayerService::class.java))
+    }
+
+    single<TrackPlayer> {
+        Media3TrackPlayer(androidContext())
+    }
+    single<ImageStorage> {
+        ImageSaver(androidContext())
+    }
+}
