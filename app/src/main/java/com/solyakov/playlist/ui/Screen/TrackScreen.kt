@@ -61,6 +61,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -80,7 +81,7 @@ fun TrackScreen(
     viewModel: TrackViewModel,
     onBackClick: () -> Unit
 ) {
-    val trackScreenState by viewModel.screenState.collectAsState()
+
     var isLoaded by remember { mutableStateOf(false) }
 
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -90,9 +91,12 @@ fun TrackScreen(
     )
     val playlists by viewModel.getAllPlaylists().collectAsState(emptyList())
 
-    val currentPositionInTrack by viewModel.currentPosition
-    val isPlaying by viewModel.isPlaying
-    val durationInTrack by viewModel.duration
+    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
+    val trackScreenState by viewModel.screenState.collectAsStateWithLifecycle()
+
+    val currentPositionInTrack = playerState.positionMs.toFloat()
+    val isPlaying = playerState.isPlaying
+    val durationInTrack = playerState.durationMs.toFloat()
 
     var isDragging by remember { mutableStateOf(false) } // для ползунка
     var sliderPosition by remember { mutableStateOf(0f) }
@@ -123,10 +127,11 @@ fun TrackScreen(
         }
 
         is TrackScreenState.Success -> {
-            val track = (trackScreenState as TrackScreenState.Success).track
-            Log.d("TrackScreen", "Track: $track")
+            val initialTrack = (trackScreenState as TrackScreenState.Success).track
+            val track = playerState.currentTrack ?: initialTrack
             LaunchedEffect(track.trackId) {
                 isLoaded = false
+                sliderPosition = 0f
             }
             PlaylistsSheet(
                 track = track,

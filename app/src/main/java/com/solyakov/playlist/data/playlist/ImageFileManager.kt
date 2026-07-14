@@ -2,14 +2,15 @@ package com.solyakov.playlist.data.playlist
 
 import android.content.Context
 import androidx.core.net.toUri
+import com.solyakov.playlist.domain.file.ImageStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class ImageSaver(private val context: Context) {
+class ImageSaver(private val context: Context): ImageStorage {
 
     private val imagesDir: File = context.filesDir
-    suspend fun saveImageToInternalStorage(url: String): String {
+    override suspend fun saveImageToInternalStorage(url: String): String {
         val fileName = "IMG_${System.currentTimeMillis()}.jpg"
         val file = File(imagesDir, fileName)
 

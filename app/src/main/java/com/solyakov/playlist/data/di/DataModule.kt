@@ -13,10 +13,13 @@ import com.solyakov.playlist.data.history.SearchHistoryRepositoryImpl
 import com.solyakov.playlist.data.network.ITunesApiService
 import com.solyakov.playlist.data.network.RetrofitNetworkClient
 import com.solyakov.playlist.data.network.TracksRepositoryImpl
-import com.solyakov.playlist.data.playlist.AudioPlayerService
+import com.solyakov.playlist.data.player.AudioPlayerService
+import com.solyakov.playlist.data.player.Media3TrackPlayer
 import com.solyakov.playlist.data.playlist.ImageSaver
 import com.solyakov.playlist.data.playlist.PlaylistsRepositoryImpl
 import com.solyakov.playlist.domain.api.NetworkClient
+import com.solyakov.playlist.domain.file.ImageStorage
+import com.solyakov.playlist.domain.player.TrackPlayer
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
 import com.solyakov.playlist.domain.repository.SearchHistoryRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
@@ -92,5 +95,12 @@ val dataModule = module {
     }
     single {
         SessionToken(get(), ComponentName(get(), AudioPlayerService::class.java))
+    }
+
+    single<TrackPlayer> {
+        Media3TrackPlayer(androidContext())
+    }
+    single<ImageStorage> {
+        ImageSaver(androidContext())
     }
 }

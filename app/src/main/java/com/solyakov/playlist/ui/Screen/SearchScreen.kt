@@ -81,7 +81,7 @@ fun SearchScreen(onClick: () -> Unit,
 ) {
     val screenState by viewModel.searchScreenState.collectAsState()
     val inputText by viewModel.searchText.collectAsState()
-    val historyRequests by viewModel.historyRepository.getHistory().collectAsState(emptyList())
+    val historyRequests by viewModel.getHistory().collectAsState(emptyList())
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
