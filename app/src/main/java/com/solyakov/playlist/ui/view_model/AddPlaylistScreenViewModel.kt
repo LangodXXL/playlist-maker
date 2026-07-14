@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.solyakov.playlist.data.playlist.ImageSaver
+import com.solyakov.playlist.domain.file.ImageStorage
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class AddPlaylistScreenViewModel(
     private val playlistsRepository: PlaylistsRepository,
-    private val imageSaver: ImageSaver
+    private val imageStorage: ImageStorage
 ): ViewModel() {
     private val _playlistName = MutableStateFlow("")
     val playlistName = _playlistName.asStateFlow()
@@ -39,7 +40,7 @@ class AddPlaylistScreenViewModel(
         viewModelScope.launch {
             val uri = _selectedImage.value
             val image = if (selectedImage.value != null) {
-                imageSaver.saveImageToInternalStorage(uri.toString())
+                imageStorage.saveImageToInternalStorage(uri.toString())
             } else null
             playlistsRepository.addPlaylist(
                 name = _playlistName.value,

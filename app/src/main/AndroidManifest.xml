@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Playlist">
-        <service android:name=".data.playlist.AudioPlayerService"
+        <service android:name=".data.player.AudioPlayerService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false">
             <intent-filter>
