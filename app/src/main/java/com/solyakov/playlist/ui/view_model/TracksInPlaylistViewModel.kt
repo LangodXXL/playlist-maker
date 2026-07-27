@@ -49,7 +49,6 @@ class TracksInPlaylistViewModel(
     fun getAllTracksInPlaylist(playlistId: Long) {
         viewModelScope.launch {
             playlistsRepository.getAllTrackInPlaylist(playlistId).collect {newList ->
-                Log.d("TracksInPlaylistViewModel", "Tracks: $newList")
                 _tracks.update {
                     newList
                 }

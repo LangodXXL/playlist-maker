@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.solyakov.playlist.data.playlist.Playlist
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
-    private val playlistsRepository: PlaylistsRepository
+    private val playlistsRepository: PlaylistsRepository,
+    private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
 
@@ -36,14 +38,14 @@ class PlaylistsViewModel(
             )
 
     fun createNewPlayList(namePlaylist: String, description: String, image: String? = null) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherIO) {
             playlistsRepository.addPlaylist(namePlaylist, description, image)
         }
     }
 
 
     fun deletePlaylistById(id: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherIO) {
             playlistsRepository.deletePlaylist(id)
         }
     }

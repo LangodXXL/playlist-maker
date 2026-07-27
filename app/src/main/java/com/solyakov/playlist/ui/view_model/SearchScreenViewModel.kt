@@ -6,6 +6,7 @@ import com.solyakov.playlist.data.network.Track
 import com.solyakov.playlist.domain.player.TrackPlayer
 import com.solyakov.playlist.domain.repository.SearchHistoryRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -28,7 +29,8 @@ sealed class SearchState {
 class SearchScreenViewModel(
     private val tracksRepository: TracksRepository,
     private val historyRepository: SearchHistoryRepository,
-    private val trackPlayer: TrackPlayer
+    private val trackPlayer: TrackPlayer,
+    private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
@@ -49,7 +51,7 @@ class SearchScreenViewModel(
             _searchScreenState.update { SearchState.Initial }
             return
         }
-        searchJob = viewModelScope.launch(Dispatchers.IO) {
+        searchJob = viewModelScope.launch(dispatcherIO) {
             delay(500)
             executeSearch(whatSearch)
 
@@ -91,7 +93,7 @@ class SearchScreenViewModel(
     fun searchAndAddToHistory(query: String) {
         if (query.isNotBlank()) {
             searchJob?.cancel()
-            searchJob = viewModelScope.launch(Dispatchers.IO) {
+            searchJob = viewModelScope.launch(dispatcherIO) {
                 historyRepository.addToHistory(query)
                 executeSearch(query)
             }
