@@ -1,8 +1,8 @@
 package com.solyakov.playlist.testutil
 
 import com.solyakov.playlist.data.dto.TrackDto
-import com.solyakov.playlist.data.network.Track
-import com.solyakov.playlist.data.playlist.Playlist
+import com.solyakov.playlist.domain.models.Track
+import com.solyakov.playlist.domain.models.Playlist
 
 object TestData {
 

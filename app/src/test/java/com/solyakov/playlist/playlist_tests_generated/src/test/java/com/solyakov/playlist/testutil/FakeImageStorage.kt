@@ -1,13 +1,13 @@
 package com.solyakov.playlist.testutil
 
-import com.solyakov.playlist.domain.file.ImageStorage
+import com.solyakov.playlist.domain.storage.PlaylistCoverStorage
 
-class FakeImageStorage : ImageStorage {
+class FakeImageStorage : PlaylistCoverStorage {
 
     var savedUri: String? = null
     var resultPath: String = "saved/image.jpg"
 
-    override suspend fun saveImageToInternalStorage(uri: String): String {
+    override suspend fun savePlaylistCover(uri: String): String {
         savedUri = uri
         return resultPath
     }

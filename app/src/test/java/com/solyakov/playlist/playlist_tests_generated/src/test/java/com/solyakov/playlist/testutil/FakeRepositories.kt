@@ -1,13 +1,12 @@
 package com.solyakov.playlist.testutil
 
-import com.solyakov.playlist.data.network.Track
-import com.solyakov.playlist.data.playlist.Playlist
+import com.solyakov.playlist.domain.models.Track
+import com.solyakov.playlist.domain.models.Playlist
 import com.solyakov.playlist.domain.repository.PlaylistsRepository
 import com.solyakov.playlist.domain.repository.SearchHistoryRepository
 import com.solyakov.playlist.domain.repository.TracksRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 
 class FakeTracksRepository : TracksRepository {
 

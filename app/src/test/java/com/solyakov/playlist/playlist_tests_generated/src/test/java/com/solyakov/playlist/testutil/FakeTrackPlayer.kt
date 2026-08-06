@@ -1,6 +1,6 @@
 package com.solyakov.playlist.testutil
 
-import com.solyakov.playlist.data.network.Track
+import com.solyakov.playlist.domain.models.Track
 import com.solyakov.playlist.domain.player.PlayerState
 import com.solyakov.playlist.domain.player.TrackPlayer
 import kotlinx.coroutines.flow.MutableStateFlow

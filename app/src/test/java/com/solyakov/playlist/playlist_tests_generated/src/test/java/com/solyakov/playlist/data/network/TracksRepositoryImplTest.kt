@@ -9,6 +9,7 @@ import com.solyakov.playlist.data.dto.TrackSearchByIdRequest
 import com.solyakov.playlist.data.dto.TrackSearchByIdResponse
 import com.solyakov.playlist.data.dto.TracksSearchRequest
 import com.solyakov.playlist.data.dto.TracksSearchResponse
+import com.solyakov.playlist.domain.models.Track
 import com.solyakov.playlist.testutil.FakeNetworkClient
 import com.solyakov.playlist.testutil.TestData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -189,7 +190,7 @@ class TracksRepositoryImplTest {
     }
 }
 
-private fun com.solyakov.playlist.data.network.Track.toEntityForTest(): com.solyakov.playlist.data.database.TrackEntity {
+private fun Track.toEntityForTest(): com.solyakov.playlist.data.database.TrackEntity {
     return com.solyakov.playlist.data.database.TrackEntity(
         trackId = trackId,
         trackName = trackName,

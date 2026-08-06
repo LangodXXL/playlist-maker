@@ -1,7 +1,7 @@
 package com.solyakov.playlist.testutil
 
 import com.solyakov.playlist.data.dto.BaseResponse
-import com.solyakov.playlist.domain.api.NetworkClient
+import com.solyakov.playlist.data.network.NetworkClient
 
 class FakeNetworkClient : NetworkClient {
 
