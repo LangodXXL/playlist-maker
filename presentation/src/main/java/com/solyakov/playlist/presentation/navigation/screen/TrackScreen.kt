@@ -4,6 +4,7 @@ package com.solyakov.playlist.presentation.navigation.screen
 
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -127,8 +128,10 @@ fun TrackScreen(
         }
 
         is TrackScreenState.Success -> {
-            val initialTrack = (trackScreenState as TrackScreenState.Success).track
-            val track = playerState.currentTrack ?: initialTrack
+            val screenTrack = (trackScreenState as TrackScreenState.Success).track
+            val playerTrack = playerState.currentTrack
+            val track = if (playerTrack != null && screenTrack.trackId == playerTrack.trackId)
+                playerTrack.copy(favorite = screenTrack.favorite) else playerTrack ?: screenTrack
             LaunchedEffect(track.trackId) {
                 isLoaded = false
                 sliderPosition = 0f
@@ -386,6 +389,7 @@ fun TrackScreen(
                                 contentDescription = "Add to favorites",
                                 tint = Color.White
                             )
+                            Log.d("Favorite", "${track.trackName} ${track.favorite}")
                         },
                         shape = CircleShape,
                         containerColor = Color.LightGray
