@@ -1,0 +1,11 @@
+package com.solyakov.playlist.domain.models
+
+data class Track(
+    val trackId: Long,
+    val trackName: String,
+    val artistName: String,
+    val trackTime: String,
+    var favorite: Boolean = false,
+    val image: String,
+    val previewUrl: String
+)

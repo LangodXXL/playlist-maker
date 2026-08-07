@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Playlist"
 include(":app")
- 
+include(":domain")
+include(":presentation")
+include(":data")
+include(":testing")
